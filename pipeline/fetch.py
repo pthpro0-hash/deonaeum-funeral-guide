@@ -47,7 +47,7 @@ def fetch_ftc(out: Path, session: requests.Session) -> dict:
     if r.content[:4] != bytes.fromhex("D0CF11E0"):
         raise RuntimeError("공정위 파일이 XLS 형식이 아님")
     out.write_bytes(r.content)
-    return {"base_date": datetime.now().strftime("%Y-%m-%d")}
+    return {"base_date": datetime.now(timezone.utc).strftime("%Y-%m-%d")}
 
 
 def main() -> dict:

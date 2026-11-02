@@ -23,6 +23,6 @@ LINKS = {
     "ehaneul": "https://15774129.go.kr/",
     "refund_calc": "https://www.mysangjo.or.kr/web/sangjo/refund.do",
     "mysangjo": "https://www.mysangjo.or.kr/",
-    "gov24_inherit": "https://www.gov.kr/portal/onestopSvc/Inheritance",
-    "gov24_death": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000015",
+    "gov24_inherit": "https://www.gov.kr/portal/onestopSvc/safeInheritance",
+    "gov24_death": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=12700000059",
 }

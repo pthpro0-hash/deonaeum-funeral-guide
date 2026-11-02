@@ -65,7 +65,13 @@ def load_companies(path: Path) -> list[dict]:
 
 
 def is_funeral(c: dict) -> bool:
-    if "상조" in c["legal_name"]:
-        return True
+    """판매 품목에 장례 서비스가 보이면 상조회사로 본다.
+
+    품목으로 판단할 수 없을 때만 상호를 본다. 영업 중인 회사는 현재 상호에 '상조'가 있어야 하고,
+    영업 중이 아닌 회사는 예전 상호까지 본다(유족이 옛 이름으로 찾을 수 있게).
+    """
     blob = " ".join(p["name"] + " " + p["terms"] for p in c["products"])
-    return bool(FUNERAL_WORDS.search(blob))
+    if FUNERAL_WORDS.search(blob):
+        return True
+    name = c["name"] if c["status"] == "정상영업" else c["legal_name"]
+    return "상조" in name

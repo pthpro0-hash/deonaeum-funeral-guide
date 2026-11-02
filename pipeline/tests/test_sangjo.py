@@ -47,3 +47,4 @@ def test_is_funeral():
     assert is_funeral(by["코웨이라이프솔루션(주)"])
     assert not is_funeral(by["(주)하나로크루즈"])
     assert not is_funeral(by["에이치디투어존(주)"])
+    assert not is_funeral(by["(주)나드리가자"])  # 품목에 장례 근거 없음, 예전 상호에만 '상조'
