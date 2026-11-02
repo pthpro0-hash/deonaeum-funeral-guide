@@ -5,6 +5,9 @@ import * as before from "./views/before.js";
 import * as sangjo from "./views/sangjo.js";
 import * as about from "./views/about.js";
 import * as plan from "./views/plan.js";
+import * as help from "./views/help.js";
+import { syncNav } from "./nav.js";
+import { get } from "./store.js";
 import { bindMore, bindSave } from "./ui.js";
 
 const ROUTES = [
@@ -18,9 +21,11 @@ const ROUTES = [
   [/^\/before\/sangjo\/(s\d+)$/, sangjo.renderDetail],
   [/^\/plan(?:\/(\w+))?$/, plan.render],
   [/^\/about$/, about.render],
+  [/^\/help$/, help.render],
 ];
 
 const root = document.getElementById("app");
+const nav = document.getElementById("gnav");
 bindSave(root);
 bindMore(root);
 
@@ -29,6 +34,7 @@ async function route() {
   const hit = ROUTES.find(([re]) => re.test(path));
   const [re, fn] = hit || ROUTES[0];
   const params = path.match(re)?.slice(1) || [];
+  syncNav(nav, path, get("started", false));
   root.innerHTML = `<div class="loading">불러오는 중…</div>`;
   try {
     await fn(root, ...params);

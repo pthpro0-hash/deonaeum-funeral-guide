@@ -15,8 +15,18 @@ a { color: inherit; }
 button, select, input { font: inherit; color: inherit; }
 .app { max-width: 520px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding: 0 22px; }
 
-/* 상단 */
-.top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0 6px; gap: 12px; }
+/* 상단 고정 메뉴 · 어느 화면에서나 보인다 */
+html { scroll-padding-top: 64px; }
+.gnav { position: sticky; top: 0; z-index: 20; background: rgba(245,242,236,.94); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top); }
+.gnav-in { max-width: 520px; margin: 0 auto; padding: 0 22px; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.gnav-l { display: flex; gap: 16px; }
+.gnav-l a { font-size: 13.5px; color: var(--sub); text-decoration: none; white-space: nowrap; padding: 15px 0 13px; border-bottom: 1.5px solid transparent; }
+.gnav-l a[aria-current="page"] { color: var(--ink); font-weight: 600; border-color: var(--ink); }
+@media (max-width: 360px) { .gnav-in { padding: 0 16px; } .gnav-l { gap: 11px; } .gnav-l a { font-size: 13px; } .gnav .wm { letter-spacing: .16em; } }
+@media (min-width: 560px) { .gnav-in { padding: 0 32px; } .gnav-l { gap: 22px; } }
+
+/* 화면별 상단 */
+.top { display: flex; justify-content: space-between; align-items: center; padding: 16px 0 6px; gap: 12px; }
 .wm { font-family: var(--serif); font-weight: 600; font-size: 15px; letter-spacing: .32em; text-decoration: none; white-space: nowrap; }
 .top-r { font-size: 12.5px; color: var(--sub); text-align: right; }
 .back { font-size: 13px; color: var(--sub); text-decoration: none; }
@@ -42,7 +52,7 @@ p { margin: 8px 0; }
 .rule { height: 1px; background: var(--line); margin: 40px 0 28px; border: 0; }
 
 /* 홈 */
-.home { padding-top: 70px; }
+.home { padding-top: 48px; }
 .home .btn { margin-top: 26px; }
 
 /* 선택 칩 */
@@ -143,7 +153,7 @@ textarea.search { resize: vertical; line-height: 1.6; border: 1px solid var(--li
   @page { margin: 18mm; }
   body { background: #fff; background-image: none; color: #000; font-size: 12pt; }
   .app { max-width: none; padding: 0; }
-  .top, .noprint, footer { display: none !important; }
+  .gnav, .top, .noprint, footer { display: none !important; }
   .print-only { display: block; }
   .paper h2 { margin-top: 0; }
   .kv { grid-template-columns: 34mm 1fr; }
@@ -152,3 +162,9 @@ textarea.search { resize: vertical; line-height: 1.6; border: 1px solid var(--li
   .sheet:last-child { break-after: auto; }
   .lined { height: 245mm; border: 0; background: repeating-linear-gradient(transparent 0 9mm, #999 9mm calc(9mm + 0.3px)); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* 도움말 */
+.steps { margin: 10px 0 0; padding-left: 20px; font-size: 14px; line-height: 1.75; }
+.steps li { margin: 4px 0; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 16px; font-size: 13px; }
+details.faq p { font-size: 13.5px; color: var(--sub); line-height: 1.75; margin: 0 0 14px; }

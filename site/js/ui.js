@@ -25,17 +25,19 @@ export const eok = (n) => {
   return a >= 1e8 ? (n < 0 ? "-" : "") + (a / 1e8).toFixed(a >= 1e10 ? 0 : 1) + "억 원" : won(n);
 };
 
+// 더나음 글자와 주 메뉴는 화면 위 고정 메뉴에 있다. 여기는 뒤로 가기와 화면별 버튼만.
 export function top({ right = "", back = null } = {}) {
-  return `<header class="top">
-    ${back ? `<a class="back" href="${esc(back)}">‹ 뒤로</a>` : `<a class="wm" href="#/">더나음</a>`}
-    <div class="top-r">${right}</div></header>`;
+  if (!back && !right) return "";
+  return `<div class="top">
+    ${back ? `<a class="back" href="${esc(back)}">‹ 뒤로</a>` : "<span></span>"}
+    <div class="top-r">${right}</div></div>`;
 }
 
 export function footer() {
   return `<footer>
     운영 · 더나음 · 정보 제공만 하며 업체를 중개하지 않습니다.<br>
     개인정보를 수집하지 않습니다. 입력한 내용은 이 기기에만 저장됩니다.<br>
-    <a href="#/about">출처와 기준일 · 점수 계산 방법</a>
+    <a href="#/help">도움말</a> · <a href="#/about">출처와 기준일 · 점수 계산 방법</a>
   </footer>`;
 }
 
