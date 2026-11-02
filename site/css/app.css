@@ -130,3 +130,25 @@ footer a { color: var(--sub); }
 .pb { padding-bottom: 8px; }
 .loading { padding: 40px 0; color: var(--faint); font-size: 13px; }
 @media (min-width: 560px) { .app { padding: 0 32px; } .stages { margin: 14px -32px 0; padding: 0 32px; } }
+
+/* 내 부고 준비 */
+textarea.search { resize: vertical; line-height: 1.6; border: 1px solid var(--line); padding: 10px; }
+.num { appearance: none; background: transparent; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; padding: 8px 2px; font-size: 14.5px; min-width: 96px; }
+.warn-t { color: var(--warn) !important; }
+.guide { padding-left: 20px; font-size: 14px; line-height: 1.9; }
+.print-only { display: none; }
+.sheet + .sheet { margin-top: 28px; }
+.lined { height: 900px; border: 1px solid var(--line); background: repeating-linear-gradient(transparent 0 35px, var(--line) 35px 36px); }
+@media print {
+  @page { margin: 18mm; }
+  body { background: #fff; background-image: none; color: #000; font-size: 12pt; }
+  .app { max-width: none; padding: 0; }
+  .top, .noprint, footer { display: none !important; }
+  .print-only { display: block; }
+  .paper h2 { margin-top: 0; }
+  .kv { grid-template-columns: 34mm 1fr; }
+  .kv dt { color: #444; }
+  .sheet { break-after: page; }
+  .sheet:last-child { break-after: auto; }
+  .lined { height: 245mm; border: 0; background: repeating-linear-gradient(transparent 0 9mm, #999 9mm calc(9mm + 0.3px)); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

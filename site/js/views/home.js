@@ -15,6 +15,11 @@ export function render(root) {
     <h2 style="margin-top:12px">미리 준비하기</h2>
     <p class="lead" style="margin-bottom:18px">장례식장과 상조회사를 차분히 비교해 두세요.<br>공식 공공데이터와 공정거래위원회 공시만 씁니다.</p>
     <a class="ul" href="#/before">준비 시작하기 →</a>
+    <hr class="rule">
+    <div class="lb">내 부고 준비</div>
+    <h2 style="margin-top:12px">나의 마지막을 적어 두기</h2>
+    <p class="lead" style="margin-bottom:18px">바라는 장례 방식, 법정상속분, 유언 방식, 디지털 자산과 사전연명의료의향서까지.<br>이 기기에만 저장하고, 인쇄해 가족에게 전합니다.</p>
+    <a class="ul" href="#/plan">적어 두기 →</a>
   </main>
   ${footer()}`;
 }

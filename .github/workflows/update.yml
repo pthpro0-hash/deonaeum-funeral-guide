@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['site/**', 'pipeline/**', '.github/workflows/**']
+    paths: ['site/**', 'pipeline/**', 'tests/**', '.github/workflows/**']
 
 permissions:
   contents: write
@@ -58,6 +58,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+      - name: 계산기 테스트
+        run: node --test tests/*.test.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -4,6 +4,7 @@ import * as after from "./views/after.js";
 import * as before from "./views/before.js";
 import * as sangjo from "./views/sangjo.js";
 import * as about from "./views/about.js";
+import * as plan from "./views/plan.js";
 import { bindMore, bindSave } from "./ui.js";
 
 const ROUTES = [
@@ -15,6 +16,7 @@ const ROUTES = [
   [/^\/before\/rites$/, before.renderRites],
   [/^\/before\/sangjo$/, sangjo.renderList],
   [/^\/before\/sangjo\/(s\d+)$/, sangjo.renderDetail],
+  [/^\/plan(?:\/(\w+))?$/, plan.render],
   [/^\/about$/, about.render],
 ];
 
