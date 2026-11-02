@@ -21,6 +21,16 @@ def test_build_outputs():
     assert all("score" in c or c.get("no_financials") for c in sangjo["active"])
     totals = [c["score"]["total"] for c in sangjo["active"] if "score" in c]
     assert totals == sorted(totals, reverse=True) and all(0 <= t <= 100 for t in totals)
+    # 규모 보정: 대형업체 중앙값보다 높은 소형 회사만 깎이고, 중앙값 아래로는 내려가지 않는다
+    bench = sangjo["benchmark"]
+    for c in sangjo["active"]:
+        s = c.get("score")
+        if not s:
+            continue
+        if c["prepaid"] >= 100e8 or s["raw"] <= bench:
+            assert s["total"] == s["raw"]
+        else:
+            assert bench <= s["total"] <= s["raw"]
 
 
 @needs_out

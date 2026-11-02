@@ -24,6 +24,12 @@ def _text(v) -> str:
     return re.sub(r"\s+", " ", str(v)).strip()
 
 
+def _date(v) -> str | None:
+    """'20110316' → '2011-03-16'. 비었거나 형식이 다르면 None."""
+    m = re.fullmatch(r"(\d{4})(\d{2})(\d{2})", _text(v).split(".")[0])
+    return f"{m[1]}-{m[2]}-{m[3]}" if m else None
+
+
 def display_name(raw: str) -> str:
     name = re.sub(r"^\[[^\]]*\]\s*", "", raw.strip())          # [휴업] 같은 접두어
     name = re.sub(r"\s*[\[(]\s*\(?구[\s.,].*$", "", name)       # [구, …] / (구. …) 이전 상호
@@ -46,6 +52,8 @@ def load_companies(path: Path) -> list[dict]:
             "address": _text(v[6]),
             "tel": _text(v[8]) or None,
             "status": _text(v[10]),
+            "started": _date(v[11]),
+            "registered": _date(v[3]),
             "closed_at": _text(v[12]) or None,
             "products": products,
             "assets": _num(v[21]),

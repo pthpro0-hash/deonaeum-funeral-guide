@@ -15,7 +15,7 @@ from .facilities import load_facilities
 from .ftc import is_funeral, load_companies
 from .geocode import geocode_all, load_cache
 from .regions import SIDO
-from .score import RULES, safety_score
+from .score import RULES, SCALE, apply_scale, safety_score
 from .sources import DATASETS, FTC, LINKS
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -73,15 +73,16 @@ def build_sangjo() -> dict:
             active.append(_clean(c))
         else:
             inactive.append(_clean({k: c.get(k) for k in ("id", "name", "legal_name", "status", "closed_at", "reg_no")}))
+    bench = apply_scale(active)
     active.sort(key=lambda c: (-(c.get("score") or {}).get("total", -1), c["name"]))
-    return {"active": active, "inactive": inactive}
+    return {"active": active, "inactive": inactive, "benchmark": bench}
 
 
 def build_meta(fetch_meta: dict) -> dict:
     sources = {k: {**{x: v[x] for x in ("title", "org", "url")}, **fetch_meta.get(k, {})} for k, v in DATASETS.items()}
     sources["sangjo"] = {"title": FTC["title"], "org": FTC["org"], "url": FTC["url"], **fetch_meta.get("sangjo", {})}
     return {"built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "sources": sources, "score_rules": RULES, "links": LINKS}
+            "sources": sources, "score_rules": RULES, "score_scale": SCALE, "links": LINKS}
 
 
 def main(argv: list[str]) -> None:
