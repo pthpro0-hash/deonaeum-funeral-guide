@@ -1,0 +1,77 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  .flow { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; align-items: flex-start; }
+  .col { width: 340px; }
+  .col-cap { padding: 14px 6px 0; font-size: .84rem; color: var(--text-secondary); line-height: 1.55; word-break: keep-all; }
+  .col-cap b { color: var(--text-primary); }
+  .scr { --paper: #f5f2ec; --ink: #2a2824; --sub: #6d675d; --faint: #a39c90; --line: #dcd5c8; --soft: #ece7de;
+    width: 320px; height: 680px; margin: 0 auto; border-radius: 22px; overflow: hidden; word-break: keep-all;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif; color: var(--ink); background-color: var(--paper);
+    box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 28px rgba(0,0,0,.08); display: flex; flex-direction: column; }
+  .scr * { box-sizing: border-box; }
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 22px 24px 0; font-size: 12px; color: var(--faint); }
+  .wm { font-family: "Noto Serif KR", serif; font-weight: 600; font-size: 14px; letter-spacing: .32em; color: var(--ink); }
+  .pad { padding: 0 24px; }
+  h4 { font-family: "Noto Serif KR", serif; font-weight: 500; font-size: 21px; margin: 26px 0 4px; }
+  .meta { font-size: 11.5px; color: var(--sub); line-height: 1.6; margin-bottom: 14px; }
+  .item { padding: 14px 0; border-top: 1px solid var(--soft); display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; }
+  .item b { font-size: 14px; font-weight: 600; }
+  .item small { font-size: 10.5px; color: var(--faint); grid-column: 1; }
+  .score { grid-row: 1 / span 2; grid-column: 2; text-align: right; font-family: "Noto Serif KR", serif; font-size: 26px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .score i { font-style: normal; font-size: 11px; color: var(--faint); font-family: "Pretendard Variable", sans-serif; margin-left: 2px; }
+  .warn { color: #8a3b2a; font-size: 12px; font-family: "Pretendard Variable", sans-serif; font-weight: 600; }
+  .detail h4 { font-size: 19px; }
+  .big { font-family: "Noto Serif KR", serif; font-size: 52px; font-weight: 500; line-height: 1; margin: 14px 0 4px; }
+  .big i { font-style: normal; font-size: 15px; color: var(--faint); }
+  .bar-row { padding: 12px 0; border-top: 1px solid var(--soft); }
+  .bar-h { display: flex; justify-content: space-between; font-size: 12.5px; }
+  .bar-h span { color: var(--sub); font-variant-numeric: tabular-nums; }
+  .bar { height: 3px; background: var(--soft); margin: 7px 0 5px; }
+  .bar div { height: 100%; background: var(--ink); }
+  .bar-n { font-size: 10.5px; color: var(--faint); }
+  .how { margin-top: 12px; font-size: 11px; line-height: 1.6; color: var(--sub); border-top: 1px solid var(--line); padding-top: 10px; }
+  .how u { text-decoration: none; border-bottom: 1px solid var(--sub); }
+  .ft { margin-top: auto; padding: 0 24px 18px; font-size: 10px; color: var(--faint); }
+</style>
+
+<h2>상조회사 안전 점수 (100점)</h2>
+<p class="subtitle">목록에는 점수 하나만, 회사를 누르면 점수가 어떻게 나왔는지 항목별로 보여줍니다. 점수와 막대 길이는 모두 자리표시입니다.</p>
+
+<div class="flow">
+  <div class="col">
+    <div class="scr">
+      <div class="top"><span class="wm">더나음</span><span>전국</span></div>
+      <div class="pad">
+        <h4>상조회사 비교</h4>
+        <div class="meta">낸 돈이 얼마나 안전한지를 100점으로 매겼습니다. 공정거래위원회 공시만으로 계산합니다.</div>
+        <div class="item"><b>○○상조</b><small>정상영업 · 가입자 ○만 명</small><div class="score">○○<i>점</i></div></div>
+        <div class="item"><b>○○라이프</b><small>정상영업 · 가입자 ○만 명</small><div class="score">○○<i>점</i></div></div>
+        <div class="item"><b>○○프리드</b><small>정상영업 · 가입자 ○만 명</small><div class="score">○○<i>점</i></div></div>
+        <div class="item"><b>○○상조</b><small>등록취소 · 점수 없음</small><div class="score"><span class="warn">주의</span></div></div>
+        <div class="how">점수 계산 방법 <u>전체 공개 →</u></div>
+      </div>
+      <div class="ft">출처: 공정거래위원회 선불식 할부거래업자 정보공개 · 기준일 표시</div>
+    </div>
+    <div class="col-cap"><b>목록.</b> 점수 높은 순입니다. 정상영업이 아닌 회사는 점수를 매기지 않고 "주의"로 표시합니다.</div>
+  </div>
+
+  <div class="col">
+    <div class="scr detail">
+      <div class="top"><span class="wm">더나음</span><span>‹ 목록</span></div>
+      <div class="pad">
+        <h4>○○상조</h4>
+        <div class="big">○○<i> / 100</i></div>
+        <div class="meta">정상영업 · 보전기관 ○○공제조합</div>
+        <div class="bar-row"><div class="bar-h">선수금 보전 <span>○○ / 50</span></div><div class="bar"><div style="width:72%"></div></div><div class="bar-n">낸 돈의 ○○%를 공제조합·은행에 맡겨 둠 (법정 최소 50%)</div></div>
+        <div class="bar-row"><div class="bar-h">지급여력 <span>○○ / 30</span></div><div class="bar"><div style="width:60%"></div></div><div class="bar-n">지급여력비율 ○.○○ — 고객에게 돌려줄 돈이 충분한지</div></div>
+        <div class="bar-row"><div class="bar-h">부채 부담 <span>○○ / 20</span></div><div class="bar"><div style="width:45%"></div></div><div class="bar-n">부채비율 ○○% — 낮을수록 높은 점수</div></div>
+        <div class="how">이 점수는 회사의 재무 안전성만 봅니다. 서비스 품질이나 상품 가격은 포함하지 않습니다.</div>
+      </div>
+      <div class="ft">출처: 공정거래위원회 공시 (○○○○.○○.○○ 기준)</div>
+    </div>
+    <div class="col-cap"><b>상세.</b> 세 항목의 점수를 더한 값이 총점입니다. 각 항목이 무슨 뜻인지 한 줄로 풀어 줍니다.</div>
+  </div>
+</div>

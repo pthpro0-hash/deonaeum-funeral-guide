@@ -1,0 +1,110 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  .flow { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; align-items: flex-start; }
+  .col { width: 340px; }
+  .col-cap { padding: 14px 6px 0; font-size: .84rem; color: var(--text-secondary); line-height: 1.55; word-break: keep-all; }
+  .col-cap b { color: var(--text-primary); }
+
+  .scr { --paper: #f5f2ec; --ink: #2a2824; --sub: #6d675d; --faint: #a39c90; --line: #dcd5c8; --soft: #ece7de;
+    width: 320px; height: 680px; margin: 0 auto; border-radius: 22px; overflow: hidden; position: relative; word-break: keep-all;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif; color: var(--ink); background-color: var(--paper);
+    box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 28px rgba(0,0,0,.08); display: flex; flex-direction: column;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.27  0 0 0 0 0.22  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E"); }
+  .scr * { box-sizing: border-box; }
+  .serif { font-family: "Noto Serif KR", serif; }
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 22px 26px 0; font-size: 12px; color: var(--faint); }
+  .wm { font-family: "Noto Serif KR", serif; font-weight: 600; font-size: 14px; letter-spacing: .32em; color: var(--ink); }
+  .pad { padding: 0 26px; }
+  .lb { font-size: 10.5px; letter-spacing: .26em; color: var(--faint); }
+
+  /* 화면 1 — 두 가지 질문 */
+  .q h4 { font-family: "Noto Serif KR", serif; font-weight: 500; font-size: 22px; line-height: 1.4; margin: 40px 0 6px; }
+  .q .intro { font-size: 12.5px; color: var(--sub); line-height: 1.7; margin-bottom: 30px; }
+  .q .qt { font-size: 13.5px; font-weight: 600; margin: 0 0 10px; }
+  .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 28px; }
+  .chip { border: 1px solid var(--line); border-radius: 2px; padding: 11px 0; text-align: center; font-size: 13px; color: var(--sub); }
+  .chip.on { border-color: var(--ink); color: var(--ink); font-weight: 600; box-shadow: inset 0 0 0 .5px var(--ink); }
+  .sel { display: flex; gap: 6px; }
+  .sel div { flex: 1; border-bottom: 1px solid var(--ink); padding: 9px 2px; font-size: 13.5px; display: flex; justify-content: space-between; }
+  .sel div i { font-style: normal; color: var(--faint); }
+  .why { margin-top: 10px; font-size: 11.5px; line-height: 1.6; color: var(--sub); }
+  .btn { display: block; text-align: center; background: var(--ink); color: var(--paper); font-size: 13.5px; font-weight: 500; letter-spacing: .06em; padding: 15px 0; border-radius: 2px; }
+  .skip { text-align: center; font-size: 12px; color: var(--faint); margin-top: 12px; }
+
+  /* 화면 2 — 단계별 할 일 */
+  .stages { display: flex; gap: 14px; padding: 18px 26px 0; font-size: 12px; color: var(--faint); white-space: nowrap; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .stages span { padding-bottom: 10px; }
+  .stages .on { color: var(--ink); font-weight: 600; border-bottom: 1.5px solid var(--ink); }
+  .stg h4 { font-family: "Noto Serif KR", serif; font-weight: 500; font-size: 20px; margin: 22px 0 4px; }
+  .stg .meta { font-size: 11.5px; color: var(--faint); margin-bottom: 14px; }
+  .task { display: grid; grid-template-columns: 18px 1fr; gap: 10px; padding: 12px 0; border-top: 1px solid var(--soft); }
+  .box { width: 16px; height: 16px; border: 1.2px solid var(--ink); border-radius: 1px; margin-top: 2px; position: relative; }
+  .box.done:after { content: ""; position: absolute; left: 4.5px; top: 1px; width: 4px; height: 8px; border: solid var(--ink); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+  .task b { font-size: 13.5px; font-weight: 600; display: block; margin-bottom: 3px; }
+  .task.done b { color: var(--faint); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .task p { margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--sub); }
+  .who { display: inline-block; font-size: 10px; letter-spacing: .04em; padding: 1px 6px; margin-left: 4px; vertical-align: 1px; border: 1px solid var(--line); color: var(--sub); font-weight: 500; }
+  .who.fam { border-color: var(--ink); color: var(--ink); }
+  .near { margin-top: 10px; background: rgba(255,255,255,.45); border: 1px solid var(--line); padding: 2px 12px; }
+  .near-h { display: flex; justify-content: space-between; font-size: 11px; color: var(--faint); padding: 9px 0 6px; }
+  .fh { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid var(--soft); }
+  .fh b { font-size: 12.5px; font-weight: 600; display: block; }
+  .fh span { font-size: 10.5px; color: var(--faint); }
+  .call { font-size: 11px; border: 1px solid var(--ink); padding: 4px 9px; border-radius: 2px; }
+  .ft { margin-top: auto; padding: 0 26px 18px; font-size: 10px; color: var(--faint); }
+</style>
+
+<h2>임종 후 안내는 이렇게 흘러갑니다</h2>
+<p class="subtitle">1번 "비움" 방향으로 그렸습니다. 왼쪽은 "지금 할 일 보기"를 누르면 나오는 첫 화면, 오른쪽은 단계별 할 일 화면입니다. ○는 실제 데이터 자리입니다.</p>
+
+<div class="flow">
+
+  <div class="col">
+    <div class="scr q">
+      <div class="top"><span class="wm">더나음</span><span>닫기</span></div>
+      <div class="pad">
+        <h4>두 가지만 여쭙겠습니다</h4>
+        <div class="intro">답에 맞춰 해야 할 일과 가까운 시설을 골라 드립니다. 모르시면 건너뛰셔도 됩니다.</div>
+        <div class="qt">지금 어디에 계신가요?</div>
+        <div class="chips">
+          <div class="chip on">병원</div><div class="chip">자택</div>
+          <div class="chip">요양원·요양병원</div><div class="chip">그 외</div>
+        </div>
+        <div class="qt">고인의 주민등록 주소지는요?</div>
+        <div class="sel"><div>서울특별시 <i>▾</i></div><div>강남구 <i>▾</i></div></div>
+        <div class="why">화장장은 고인 주소지 주민에게 요금이 훨씬 쌉니다. 지역에 따라 몇 배까지 차이 납니다.</div>
+      </div>
+      <div class="pad" style="margin-top:auto; padding-bottom:22px">
+        <span class="btn">안내 시작</span>
+        <div class="skip">건너뛰기</div>
+      </div>
+    </div>
+    <div class="col-cap"><b>① 시작 질문 두 개.</b> 임종 장소에 따라 사망진단서 절차가 달라지고, 고인 주소지에 따라 화장장 요금이 달라집니다.</div>
+  </div>
+
+  <div class="col">
+    <div class="scr stg">
+      <div class="top"><span class="wm">더나음</span><span>서울 강남구 · 병원</span></div>
+      <div class="stages"><span class="on">0~4시간</span><span>4~12시간</span><span>1일차</span><span>2일차</span><span>3일차</span><span>장례 후</span></div>
+      <div class="pad">
+        <h4>임종 직후</h4>
+        <div class="meta">3가지 중 1가지 완료</div>
+        <div class="task done"><div class="box done"></div><div><b>사망진단서 발급 <span class="who fam">가족</span></b><p>담당 의사에게 5~10통 넉넉히 받으세요.</p></div></div>
+        <div class="task"><div class="box"></div><div><b>상조회사 접수 <span class="who fam">가족</span></b><p>가입한 곳이 있으면 연락합니다. 없으면 병원 장례식장 상품과 비교해 보세요.</p></div></div>
+        <div class="task"><div class="box"></div><div><b>안치실로 고인 이송 <span class="who">상조·장례식장</span></b><p>장례식장을 정하면 그쪽에서 모십니다.</p>
+          <div class="near">
+            <div class="near-h"><span>가까운 장례식장</span><span>거리순</span></div>
+            <div class="fh"><div><b>○○병원 장례식장</b><span>○km · 빈소 ○ · 안치 ○구 · 사설</span></div><span class="call">전화</span></div>
+            <div class="fh"><div><b>○○장례식장</b><span>○km · 빈소 ○ · 안치 ○구 · 공설</span></div><span class="call">전화</span></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="ft">출처: 보건복지부 전국 장례식장 현황 (2026.04.01 기준)</div>
+    </div>
+    <div class="col-cap"><b>② 단계별 할 일.</b> 할 일마다 <b>가족이 직접</b> 정할 일인지, <b>상조·장례식장이 진행</b>하는 일인지 표시합니다. 위치가 필요한 할 일 안에 가까운 시설이 바로 붙습니다.</div>
+  </div>
+
+</div>

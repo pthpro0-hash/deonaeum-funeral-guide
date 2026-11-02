@@ -1,0 +1,143 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  .dirs { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; align-items: flex-start; }
+  .dir { width: 340px; cursor: pointer; border-radius: 18px; padding: 10px; border: 2px solid transparent; transition: border-color .15s; }
+  .dir:hover { border-color: var(--border); }
+  .dir.selected { border-color: var(--accent); }
+  .dir-cap { padding: 14px 6px 4px; }
+  .dir-cap h3 { font-size: 1rem; margin: 0 0 4px; }
+  .dir-cap p { font-size: .84rem; color: var(--text-secondary); margin: 0 0 6px; line-height: 1.5; word-break: keep-all; }
+  .dir-cap .kw { font-size: .74rem; color: var(--text-tertiary); letter-spacing: .02em; }
+
+  .scr { width: 320px; height: 680px; margin: 0 auto; border-radius: 22px; overflow: hidden; position: relative; word-break: keep-all; font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 28px rgba(0,0,0,.08); }
+  .scr * { box-sizing: border-box; }
+  .vp { position: absolute; top: 10px; right: 14px; font-size: 9px; letter-spacing: .08em; opacity: .35; font-family: ui-monospace, monospace; }
+
+  /* ── 1. Kenya Hara · 空 ── */
+  .hara { background-color: #f5f2ec; color: #2a2824; padding: 34px 30px 26px; display: flex; flex-direction: column;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.27  0 0 0 0 0.22  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E"); }
+  .hara .hd { display: flex; justify-content: space-between; align-items: baseline; }
+  .hara .wm { font-family: "Noto Serif KR", serif; font-weight: 600; font-size: 15px; letter-spacing: .32em; }
+  .hara .loc { font-size: 11.5px; color: #8b857a; border-bottom: 1px solid #cfc8bb; padding-bottom: 1px; }
+  .hara .lb { font-size: 10.5px; letter-spacing: .28em; color: #9d968a; margin-bottom: 14px; }
+  .hara h4 { font-family: "Noto Serif KR", serif; font-weight: 500; font-size: 27px; line-height: 1.35; margin: 0 0 14px; letter-spacing: -.01em; }
+  .hara p { font-size: 13px; line-height: 1.75; color: #6d675d; margin: 0 0 26px; }
+  .hara .btn { display: block; text-align: center; background: #2a2824; color: #f5f2ec; font-size: 13.5px; font-weight: 500; letter-spacing: .06em; padding: 15px 0; border-radius: 2px; }
+  .hara .rule { height: 1px; background: #dcd5c8; margin: 46px 0 30px; }
+  .hara h5 { font-family: "Noto Serif KR", serif; font-weight: 500; font-size: 19px; margin: 0 0 8px; }
+  .hara .lk { font-size: 13px; color: #2a2824; border-bottom: 1px solid #2a2824; padding-bottom: 2px; align-self: flex-start; }
+  .hara .ft { margin-top: auto; font-size: 10.5px; color: #a9a295; letter-spacing: .02em; }
+
+  /* ── 2. Build · 먹색 럭셔리 미니멀 ── */
+  .build { background: #1a1917; color: #ece6da; padding: 32px 26px 24px; display: flex; flex-direction: column; }
+  .build .hd { display: flex; justify-content: space-between; align-items: center; }
+  .build .wm { font-weight: 600; font-size: 12.5px; letter-spacing: .38em; }
+  .build .loc { font-size: 11px; color: #b49a6e; border: 1px solid #5a4d38; border-radius: 999px; padding: 4px 11px; }
+  .build h4 { font-weight: 200; font-size: 31px; line-height: 1.3; margin: 64px 0 14px; letter-spacing: -.02em; }
+  .build h4 b { font-weight: 500; }
+  .build p { font-size: 13px; line-height: 1.7; color: #a39c90; margin: 0 0 28px; font-weight: 300; }
+  .build .btn { display: block; text-align: center; background: #ece6da; color: #1a1917; font-size: 13.5px; font-weight: 600; padding: 15px 0; border-radius: 8px; }
+  .build .panel { margin-top: 34px; background: #23221f; border: 1px solid #2f2d29; border-radius: 14px; padding: 20px 18px; }
+  .build h5 { font-size: 15.5px; font-weight: 600; margin: 0 0 6px; }
+  .build .panel p { font-size: 12.5px; margin: 0 0 14px; }
+  .build .lk { font-size: 12.5px; color: #b49a6e; font-weight: 500; }
+  .build .ft { margin-top: auto; font-size: 10.5px; color: #6b665d; }
+
+  /* ── 3. Information Architects · 내용 우선 ── */
+  .ia { background: #ffffff; color: #1b1b1a; padding: 24px 22px 20px; display: flex; flex-direction: column; }
+  .ia .hd { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #e6e4e0; }
+  .ia .wm { font-weight: 700; font-size: 15px; letter-spacing: -.01em; }
+  .ia .loc { font-size: 12px; color: #34505f; font-weight: 500; }
+  .ia h4 { font-weight: 700; font-size: 22px; letter-spacing: -.02em; margin: 22px 0 4px; }
+  .ia .sub { font-size: 12.5px; color: #77746e; margin-bottom: 14px; }
+  .ia ol { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+  .ia li { counter-increment: s; display: grid; grid-template-columns: 26px 1fr; padding: 11px 0; border-top: 1px solid #efedea; }
+  .ia li:before { content: counter(s); font-weight: 700; font-size: 13px; color: #34505f; font-variant-numeric: tabular-nums; }
+  .ia li b { display: block; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .ia li span { font-size: 12px; line-height: 1.55; color: #6c6964; }
+  .ia .more { margin-top: 12px; font-size: 13px; font-weight: 600; color: #34505f; }
+  .ia .rule { height: 6px; background: #f3f2ef; margin: 22px -22px 20px; }
+  .ia h5 { font-size: 16.5px; font-weight: 700; margin: 0 0 4px; letter-spacing: -.01em; }
+  .ia .row { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid #efedea; font-size: 13.5px; font-weight: 500; }
+  .ia .row i { font-style: normal; color: #9a968f; }
+  .ia .ft { margin-top: auto; font-size: 10.5px; line-height: 1.5; color: #9a968f; }
+</style>
+
+<h2>어떤 분위기로 갈까요?</h2>
+<p class="subtitle">A 구조(두 갈래 시작)를 세 가지 디자인 방향으로 그렸습니다. 셋 다 화려함은 빼고, 고급스러움을 내는 방법만 다릅니다. 아직 더나음 로고가 없어 글자로 자리만 잡아 두었습니다.</p>
+
+<div class="dirs">
+
+  <div class="dir" data-choice="hara" onclick="toggleSelect(this)">
+    <div class="scr hara">
+      <span class="vp">MOBILE 320</span>
+      <div class="hd"><span class="wm">더나음</span><span class="loc">서울 강남구</span></div>
+      <div style="height:78px"></div>
+      <div class="lb">임종 후</div>
+      <h4>지금 임종하셨나요?</h4>
+      <p>당황하지 않으셔도 됩니다.<br>지금 하실 일부터 하나씩 안내해 드립니다.</p>
+      <span class="btn">지금 할 일 보기</span>
+      <div class="rule"></div>
+      <div class="lb">임종 전</div>
+      <h5>미리 준비하기</h5>
+      <p style="margin-bottom:16px">장례식장과 상조회사를 차분히 비교해 두세요.</p>
+      <span class="lk">준비 시작하기 →</span>
+      <div class="ft">공공데이터 기반 · 출처와 기준일을 함께 표시합니다</div>
+    </div>
+    <div class="dir-cap">
+      <h3>1. 비움 — 하라 겐야식 동양적 여백</h3>
+      <p>한지처럼 따뜻한 흰 바탕에 먹색 한 가지만 씁니다. 명조체 제목과 넓은 여백으로 조용하고 정중한 인상을 줍니다. 무인양품의 아트디렉션이 이 방식입니다.</p>
+      <div class="kw">고요 · 정중 · 종이 질감 · 명조</div>
+    </div>
+  </div>
+
+  <div class="dir" data-choice="build" onclick="toggleSelect(this)">
+    <div class="scr build">
+      <span class="vp">MOBILE 320</span>
+      <div class="hd"><span class="wm">더나음</span><span class="loc">서울 강남구</span></div>
+      <h4>지금<br><b>임종하셨나요?</b></h4>
+      <p>당황하지 않으셔도 됩니다. 지금 하실 일부터 하나씩 안내해 드립니다.</p>
+      <span class="btn">지금 할 일 보기</span>
+      <div class="panel">
+        <h5>미리 준비하기</h5>
+        <p>장례식장과 상조회사를 차분히 비교해 두세요.</p>
+        <span class="lk">준비 시작하기 →</span>
+      </div>
+      <div class="ft">공공데이터 기반 · 출처와 기준일을 함께 표시합니다</div>
+    </div>
+    <div class="dir-cap">
+      <h3>2. 먹색 — Build식 절제된 럭셔리</h3>
+      <p>짙은 먹색 바탕에 상아색 글자, 강조색은 청동 하나만 아껴 씁니다. 얇은 글자와 굵은 글자의 대비로 격식을 냅니다. 고급 호텔이나 프리미엄 브랜드의 인상입니다.</p>
+      <div class="kw">격식 · 차분 · 어둠 속 온기 · 청동 한 점</div>
+    </div>
+  </div>
+
+  <div class="dir" data-choice="ia" onclick="toggleSelect(this)">
+    <div class="scr ia">
+      <span class="vp">MOBILE 320</span>
+      <div class="hd"><span class="wm">더나음 장례안내</span><span class="loc">서울 강남구 ›</span></div>
+      <h4>지금 임종하셨나요?</h4>
+      <div class="sub">먼저 이 세 가지부터 하시면 됩니다.</div>
+      <ol>
+        <li><div><b>사망진단서 발급</b><span>5~10통 넉넉히. 화장·사망신고에 필요합니다.</span></div></li>
+        <li><div><b>고인 이송 요청</b><span>가입한 상조회사나 장례식장에 연락합니다.</span></div></li>
+        <li><div><b>장례식장 안치실 확보</b><span>가까운 장례식장 ○곳 보기 →</span></div></li>
+      </ol>
+      <div class="more">전체 진행 순서 보기 →</div>
+      <div class="rule"></div>
+      <h5>미리 준비하기</h5>
+      <div class="row">장례식장 비교 <i>›</i></div>
+      <div class="row">상조회사 비교 <i>›</i></div>
+      <div class="ft">출처: 보건복지부 전국 장례식장 현황 (2026.04.01 기준)</div>
+    </div>
+    <div class="dir-cap">
+      <h3>3. 정돈 — 인포메이션 아키텍츠식 내용 우선</h3>
+      <p>장식은 전혀 없고 글자 위계와 얇은 선으로만 정리합니다. 첫 화면부터 해야 할 일 3가지를 바로 보여줍니다. 공문서처럼 믿음이 가고, 급한 사람이 버튼을 한 번 덜 누릅니다.</p>
+      <div class="kw">신뢰 · 명료 · 공공데이터 · 즉시성</div>
+    </div>
+  </div>
+
+</div>

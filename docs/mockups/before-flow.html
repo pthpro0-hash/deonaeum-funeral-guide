@@ -1,0 +1,81 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  .flow { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; align-items: flex-start; }
+  .col { width: 340px; }
+  .col-cap { padding: 14px 6px 0; font-size: .84rem; color: var(--text-secondary); line-height: 1.55; word-break: keep-all; }
+  .col-cap b { color: var(--text-primary); }
+  .scr { --paper: #f5f2ec; --ink: #2a2824; --sub: #6d675d; --faint: #a39c90; --line: #dcd5c8; --soft: #ece7de;
+    width: 320px; height: 680px; margin: 0 auto; border-radius: 22px; overflow: hidden; word-break: keep-all;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif; color: var(--ink); background-color: var(--paper);
+    box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 28px rgba(0,0,0,.08); display: flex; flex-direction: column;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.27  0 0 0 0 0.22  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E"); }
+  .scr * { box-sizing: border-box; }
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 22px 24px 0; font-size: 12px; color: var(--faint); }
+  .wm { font-family: "Noto Serif KR", serif; font-weight: 600; font-size: 14px; letter-spacing: .32em; color: var(--ink); }
+  .pad { padding: 0 24px; }
+  h4 { font-family: "Noto Serif KR", serif; font-weight: 500; font-size: 21px; margin: 26px 0 4px; }
+  .meta { font-size: 11.5px; color: var(--sub); line-height: 1.6; margin-bottom: 14px; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .f { font-size: 11.5px; border: 1px solid var(--line); padding: 5px 10px; border-radius: 2px; color: var(--sub); }
+  .f.on { border-color: var(--ink); color: var(--ink); font-weight: 600; }
+  .item { padding: 13px 0; border-top: 1px solid var(--soft); }
+  .item-h { display: flex; justify-content: space-between; align-items: baseline; }
+  .item-h b { font-size: 14px; font-weight: 600; }
+  .star { font-size: 11px; color: var(--sub); border-bottom: 1px solid var(--sub); }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 8px; }
+  .facts div { font-size: 10.5px; color: var(--faint); }
+  .facts div span { display: block; font-size: 13px; color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .line { font-size: 11.5px; color: var(--sub); margin-top: 6px; }
+  .line a { color: var(--ink); border-bottom: 1px solid var(--line); text-decoration: none; }
+  .ok { font-size: 10px; border: 1px solid var(--ink); padding: 1px 5px; margin-left: 5px; font-weight: 500; vertical-align: 1px; }
+  .note { margin-top: 10px; font-size: 11px; line-height: 1.6; color: var(--sub); border-top: 1px solid var(--line); padding-top: 10px; }
+  .ft { margin-top: auto; padding: 0 24px 18px; font-size: 10px; color: var(--faint); line-height: 1.5; }
+</style>
+
+<h2>임종 전 준비 — 미리 비교해 두기</h2>
+<p class="subtitle">"미리 준비하기"로 들어오면 장례식장과 상조회사를 차분히 비교하고 마음에 드는 곳을 담아 둡니다. 제휴 여부와 상관없이 모든 업체를 같은 기준으로 보여줍니다.</p>
+
+<div class="flow">
+  <div class="col">
+    <div class="scr">
+      <div class="top"><span class="wm">더나음</span><span>서울 강남구 ▾</span></div>
+      <div class="pad">
+        <h4>장례식장 비교</h4>
+        <div class="meta">거주지나 연고지 주변 후보를 미리 살펴보세요. 예약은 임종 후에만 가능합니다.</div>
+        <div class="filters"><span class="f on">전체</span><span class="f">공설</span><span class="f">사설</span><span class="f">빈소 3개 이상</span><span class="f">주차 가능</span></div>
+        <div class="item"><div class="item-h"><b>○○병원 장례식장</b><span class="star">담아두기</span></div>
+          <div class="facts"><div>거리<span>○km</span></div><div>빈소<span>○개</span></div><div>안치<span>○구</span></div></div>
+          <div class="line">사설 · 주차 ○대 · <a>가격표 보기(e하늘)</a></div></div>
+        <div class="item"><div class="item-h"><b>○○장례식장</b><span class="star">담아두기</span></div>
+          <div class="facts"><div>거리<span>○km</span></div><div>빈소<span>○개</span></div><div>안치<span>○구</span></div></div>
+          <div class="line">공설 · 주차 ○대 · <a>가격표 보기(e하늘)</a></div></div>
+        <div class="note">빈소 임대료·안치료 같은 가격은 장례식장이 e하늘에 등록한 표로 연결합니다.</div>
+      </div>
+      <div class="ft">출처: 보건복지부 전국 장례식장 현황 (2026.04.01 기준)</div>
+    </div>
+    <div class="col-cap"><b>장례식장 비교.</b> 공공데이터의 시설 정보로 거르고 비교합니다. 가격은 API가 없어 e하늘 가격표로 연결합니다. 담아 둔 곳은 임종 후 안내에서 맨 위에 나옵니다.</div>
+  </div>
+
+  <div class="col">
+    <div class="scr">
+      <div class="top"><span class="wm">더나음</span><span>전국</span></div>
+      <div class="pad">
+        <h4>상조회사 비교</h4>
+        <div class="meta">가격보다 먼저 볼 것은 <b>낸 돈이 안전한지</b>입니다. 공정거래위원회 공시 기준입니다.</div>
+        <div class="filters"><span class="f on">보전비율순</span><span class="f">가입자순</span><span class="f">지급여력순</span></div>
+        <div class="item"><div class="item-h"><b>○○상조 <span class="ok">정상영업</span></b><span class="star">담아두기</span></div>
+          <div class="facts"><div>선수금 보전<span>○○%</span></div><div>지급여력<span>○.○○</span></div><div>부채비율<span>○○%</span></div></div>
+          <div class="line">보전기관: ○○공제조합</div></div>
+        <div class="item"><div class="item-h"><b>○○라이프 <span class="ok">정상영업</span></b><span class="star">담아두기</span></div>
+          <div class="facts"><div>선수금 보전<span>○○%</span></div><div>지급여력<span>○.○○</span></div><div>부채비율<span>○○%</span></div></div>
+          <div class="line">보전기관: ○○은행</div></div>
+        <div class="note">이미 가입했다면 <a style="color:inherit">해약환급금 계산기</a>로 예상 금액을 확인할 수 있습니다. 상조회사가 폐업하면 '내상조 그대로'로 다른 회사에서 서비스를 받을 수 있습니다.</div>
+      </div>
+      <div class="ft">출처: 공정거래위원회 선불식 할부거래업자 정보공개</div>
+    </div>
+    <div class="col-cap"><b>상조회사 비교.</b> 공정위 공시 숫자로 "이 회사에 돈을 맡겨도 되는가"를 보여줍니다. 상품 가격은 회사마다 구성이 달라 직접 비교하지 않고, 확인할 항목만 안내합니다.</div>
+  </div>
+</div>
