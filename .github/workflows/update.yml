@@ -41,7 +41,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/data data/geocache.json
+          git add site/data data/geocache.json data/ftc-detail.json
           if git diff --cached --quiet; then echo "변경 없음"; else
             git commit -m "data: 공식 자료 주간 갱신 $(date -u +%F)"
             git push

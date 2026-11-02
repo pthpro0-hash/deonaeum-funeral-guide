@@ -7,13 +7,15 @@
 import json
 import sys
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 from . import fetch
 from .facilities import load_facilities
 from .ftc import is_funeral, load_companies
+from .ftc_detail import VIEW_URL, load_or_fetch, norm_reg
 from .geocode import geocode_all, load_cache
+from .highlights import highlights
 from .regions import SIDO
 from .score import RULES, SCALE, apply_scale, safety_score
 from .sources import DATASETS, FTC, LINKS
@@ -21,6 +23,8 @@ from .sources import DATASETS, FTC, LINKS
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 OUT = ROOT / "site" / "data"
+DETAIL_CACHE = ROOT / "data" / "ftc-detail.json"
+HOMEPAGES = Path(__file__).resolve().parent / "homepages.json"
 
 
 def _clean(d: dict) -> dict:
@@ -60,7 +64,10 @@ def build_regions(data: dict[str, list[dict]]) -> dict:
     return {"sido": SIDO, "sigungu": {s: sorted(names[s]) for s in SIDO}, "centers": centers}
 
 
-def build_sangjo() -> dict:
+def build_sangjo(details: dict[str, dict] | None = None, asof: date | None = None) -> dict:
+    details = details or {}
+    asof = asof or date.today()
+    sites = json.loads(HOMEPAGES.read_text(encoding="utf-8"))["sites"]
     companies = [c for c in load_companies(RAW / "ftc.xls") if is_funeral(c)]
     active, inactive = [], []
     for i, c in enumerate(companies, 1):
@@ -74,6 +81,14 @@ def build_sangjo() -> dict:
         else:
             inactive.append(_clean({k: c.get(k) for k in ("id", "name", "legal_name", "status", "closed_at", "reg_no")}))
     bench = apply_scale(active)
+    for c in active:
+        key = norm_reg(c.get("reg_no"))
+        d = details.get(key)
+        c["highlights"] = highlights(c, d, asof)
+        if d:
+            c["ftc_url"] = VIEW_URL.format(sn=d["sn"])
+        if key in sites:
+            c["homepage"] = sites[key]["url"]
     active.sort(key=lambda c: (-(c.get("score") or {}).get("total", -1), c["name"]))
     return {"active": active, "inactive": inactive, "benchmark": bench}
 
@@ -92,7 +107,9 @@ def main(argv: list[str]) -> None:
     for k, items in data.items():
         _write(k, [_clean(f) for f in items])
     _write("regions", build_regions(data))
-    sangjo = build_sangjo()
+    details = load_or_fetch(DETAIL_CACHE, fetch="--no-fetch" not in argv)
+    asof = date.fromisoformat(fetch_meta["sangjo"]["base_date"])
+    sangjo = build_sangjo(details, asof)
     _write("sangjo", sangjo)
     _write("meta", build_meta(fetch_meta))
     geo = sum(1 for items in data.values() for f in items if f["lat"] is not None)

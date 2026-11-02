@@ -37,6 +37,20 @@ export async function renderList(root) {
   });
 }
 
+// 한눈에 보기: 공시 숫자와 이력에서 규칙으로 뽑은 특장점·주의할 점 (pipeline/highlights.py)
+function summary(c) {
+  const h = c.highlights;
+  if (!h || (!h.good.length && !h.watch.length)) return "";
+  const list = (items, cls) => `<ul class="hl ${cls}">${items.map((x) =>
+    `<li>${esc(x.text)}<span class="hl-src">${esc(x.basis)}</span></li>`).join("")}</ul>`;
+  return `<section class="sum" aria-label="한눈에 보기">
+    <h3>한눈에 보기</h3>
+    ${h.good.length ? `<div class="sum-h">특장점</div>${list(h.good, "good")}` : ""}
+    ${h.watch.length ? `<div class="sum-h warn">주의할 점</div>${list(h.watch, "watch")}` : ""}
+    <p class="small" style="margin-top:10px">공정위 공시 숫자와 이력에서 정해진 기준으로 뽑은 내용이며, 더나음의 평가나 추천이 아닙니다.${c.ftc_url ? ` <a class="ul sub" href="${esc(c.ftc_url)}" target="_blank" rel="noopener">공정위 원문 보기 ↗</a>` : ""}</p>
+  </section>`;
+}
+
 function fmtDate(s) {
   return /^\d{8}$/.test(s) ? `${s.slice(0, 4)}.${s.slice(4, 6)}.${s.slice(6)}` : s;
 }
@@ -62,8 +76,12 @@ export async function renderDetail(root, id) {
     ${c.score ? `<div class="big">${c.score.total}<i> / 100</i></div>` : `<p class="lead">공시된 재무 정보가 없어 점수를 매기지 않았습니다.</p>`}
     ${adj ? `<p class="small">공시 비율만으로는 ${c.score.raw}점이지만, 선수금이 ${esc(eok(c.prepaid))}으로 작아 판단 근거가 적습니다. 규모 보정으로 ${adj}점을 뺐습니다.</p>` : ""}
     <div class="small">정상영업 · 보전기관 ${esc((c.guarantors || []).join(", ") || "-")}</div>
-    <p style="margin-top:12px"><button class="save" data-save="savedSangjo" data-id="${esc(c.id)}" aria-pressed="${saved}">${saved ? "담아둠" : "담아두기"}</button></p>
-    ${bars}
+    <div class="acts-row">
+      ${c.homepage ? `<a class="btn ghost" href="${esc(c.homepage)}" target="_blank" rel="noopener">홈페이지 바로가기 ↗</a>` : ""}
+      <button class="save" data-save="savedSangjo" data-id="${esc(c.id)}" aria-pressed="${saved}">${saved ? "담아둠" : "담아두기"}</button>
+    </div>
+    ${summary(c)}
+    ${bars ? `<h3>점수 근거</h3>${bars}` : ""}
 
     <h3>공시 내용</h3>
     <dl class="kv">
@@ -85,6 +103,7 @@ export async function renderDetail(root, id) {
     <div class="box" style="margin-top:24px;padding:14px">
       <div class="small">자세한 상품·계약 내용은 해당 상조회사에 문의하세요.</div>
       ${c.tel ? `<a class="btn" style="margin-top:12px" href="${telHref(c.tel)}">${esc(c.tel)} 전화하기</a>` : ""}
+      ${c.homepage ? `<a class="btn ghost" style="margin-top:8px" href="${esc(c.homepage)}" target="_blank" rel="noopener">홈페이지 바로가기 ↗</a>` : ""}
     </div>
     <p class="notice">${DISCLAIMER} 재무 수치는 회사가 공정위에 제출한 결산 기준이라 최신이 아닐 수 있습니다.
       이미 가입했다면 <a href="${esc(meta.links.refund_calc)}" target="_blank" rel="noopener">해약환급금 계산기 ↗</a>로 예상 환급금을 확인할 수 있습니다.</p>
