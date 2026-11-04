@@ -18,7 +18,7 @@ export function render(root) {
     <hr class="rule">
     <div class="lb">내 부고 준비</div>
     <h2 style="margin-top:12px">나의 마지막을 적어 두기</h2>
-    <p class="lead" style="margin-bottom:18px">바라는 장례 방식, 법정상속분, 유언 방식, 디지털 자산과 사전연명의료의향서까지.<br>이 기기에만 저장하고, 인쇄해 가족에게 전합니다.</p>
+    <p class="lead" style="margin-bottom:18px">바라는 장례 방식, 영정사진, 법정상속분, 유언 방식, 디지털 자산과 사전연명의료의향서까지.<br>이 기기에만 저장하고, 인쇄해 가족에게 전합니다.</p>
     <a class="ul" href="#/plan">적어 두기 →</a>
   </main>
   ${footer()}`;

@@ -4,6 +4,7 @@ import { BURIALS, RITES } from "../content.js";
 import { legalShares } from "../inherit.js";
 import { get, set } from "../store.js";
 import { esc, footer, top, won } from "../ui.js";
+import * as portrait from "./portrait.js";
 
 const CHECKED = "2026-11-02";
 const LAW = "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415";
@@ -16,6 +17,7 @@ const NOT_WILL = `<p class="notice">이 서비스에 적은 글은 <b>유언이 
 const SUB = {
   wishes: renderWishes, print: renderPrint, inherit: renderInherit,
   will: renderWill, willform: renderWillForm, digital: renderDigital, lst: renderLst,
+  portrait: portrait.render,
 };
 
 export function render(root, sub) {
@@ -32,6 +34,7 @@ function renderMenu(root) {
     <p class="lead">남은 가족이 덜 헤매도록 바라는 장례 방식과 정리할 일을 적어 둡니다. 회원가입 없이 이 기기에만 저장되고, 가족에게는 인쇄하거나 PDF로 저장해 직접 전합니다.</p>
     <div style="margin-top:22px">
       <a class="row" href="#/plan/wishes">장례에 대한 나의 바람 <i>${filled ? `${filled}개 적음 ›` : "›"}</i></a>
+      <a class="row" href="#/plan/portrait">영정사진 만들기 <i>›</i></a>
       <a class="row" href="#/plan/print">가족에게 전할 문서 (인쇄·PDF) <i>›</i></a>
       <a class="row" href="#/plan/inherit">법정상속분 계산 <i>›</i></a>
       <a class="row" href="#/plan/will">유언의 다섯 가지 법적 방식 <i>›</i></a>
