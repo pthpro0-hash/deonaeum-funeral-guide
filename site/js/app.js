@@ -4,8 +4,9 @@ import * as after from "./views/after.js";
 import * as before from "./views/before.js";
 import * as sangjo from "./views/sangjo.js";
 import * as about from "./views/about.js";
-import * as note from "./views/note.js?v=20261105s";
+import * as note from "./views/note.js?v=20261106p";
 import * as help from "./views/help.js";
+import * as privacy from "./views/privacy.js";
 import { syncNav } from "./nav.js";
 import { get } from "./store.js";
 import { bindMore, bindSave } from "./ui.js";
@@ -23,6 +24,7 @@ const ROUTES = [
   [/^\/plan(?:\/(\w+))?$/, note.redirectOld],
   [/^\/about$/, about.render],
   [/^\/help$/, help.render],
+  [/^\/privacy$/, privacy.render],
 ];
 
 const root = document.getElementById("app");

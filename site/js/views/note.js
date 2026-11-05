@@ -7,9 +7,11 @@ import {
 } from "../lifenote.js";
 import { noteSet, today } from "../notestore.js";
 import { makeCode, seal, unseal } from "../seal.js";
+import { pushReady } from "../config.js";
+import { disablePush, enablePush, isIos, pushSupported, standalone } from "../pushclient.js";
 import { get, set } from "../store.js";
 import { esc, footer, top } from "../ui.js";
-import * as plan from "./plan.js?v=20261105s"; // 옛 plan.js가 캐시에 남아 있어도 새 판을 받도록
+import * as plan from "./plan.js?v=20261106p"; // 옛 plan.js가 캐시에 남아 있어도 새 판을 받도록
 import * as portrait from "./portrait.js";
 
 const SUB = {
@@ -210,6 +212,7 @@ function renderNotice(root) {
     <p class="small" id="msg" role="status" style="margin-top:10px;text-align:center"></p>
 
     <h3>매달 잊지 않게</h3>
+    ${pushReady() ? `<div id="push"></div>` : ""}
     <p class="small">내 휴대폰 캘린더에 매달 같은 날 오전 10시 알림을 넣어 둘 수 있어요. 파일을 열면 캘린더 앱이 일정 추가를 물어봅니다.</p>
     <button class="btn ghost" id="ics" style="margin-top:10px">캘린더에 매월 알림 넣기</button>
     <p class="why">29일~31일에 시작하면 매달 28일로 잡혀요. 알림을 그만두려면 캘린더에서 이 일정을 지우세요.</p>`}
@@ -236,6 +239,43 @@ function renderNotice(root) {
   root.querySelector("#ics").addEventListener("click", () => {
     const ics = noticeIcs({ start: today(), url: pageUrl("#/note/notice"), uid: `life-note-notice-${Date.now()}@deonaeum` });
     download(new Blob([ics], { type: "text/calendar;charset=utf-8" }), "인생노트-지킴이-안내.ics");
+  });
+  if (pushReady()) drawPush(root.querySelector("#push"));
+}
+
+// 매달 알림 받기 (3-A). 서버는 이 기기의 알림 주소와 날짜만 안다.
+function drawPush(box) {
+  const p = get("note.push", {});
+  const last = get("note.notice", {}).last;
+  const def = Math.min(Number((last || today()).slice(8, 10)), 28);
+  const privacy = `<a href="#/privacy">개인정보처리방침</a>`;
+  if (p.on) {
+    box.innerHTML = `<p class="small">매달 <b>${p.day}일 오전 9시쯤</b> 이 휴대폰으로 "지킴이 안내를 보낼 때예요"라고 알려 드려요.</p>
+      <button class="btn ghost" id="push-off" style="margin-top:10px">알림 끄기</button>
+      <p class="small warn" id="push-msg" role="status" style="margin-top:8px"></p>`;
+  } else if (!pushSupported()) {
+    box.innerHTML = isIos() && !standalone()
+      ? `<p class="small">아이폰은 Safari 아래쪽 공유 버튼 → <b>홈 화면에 추가</b>를 누른 뒤, 홈 화면의 더나음 아이콘으로 열면 매달 알림을 켤 수 있어요. 그 전에는 아래 캘린더 알림을 써 주세요.</p>`
+      : `<p class="small">이 브라우저는 알림을 지원하지 않아요. 아래 캘린더 알림을 써 주세요.</p>`;
+    return;
+  } else {
+    box.innerHTML = `<p class="small">매달 정한 날 이 휴대폰으로 알려 드려요. 알림 받을 주소와 날짜만 서버에 보관하고, 이름·번호·노트 내용은 보내지 않아요. ${privacy}</p>
+      <div class="acts-row" style="align-items:center"><select class="num" id="push-day" aria-label="알림 날짜">${Array.from({ length: 28 }, (_, i) =>
+        `<option value="${i + 1}"${i + 1 === def ? " selected" : ""}>매달 ${i + 1}일</option>`).join("")}</select>
+      <button class="btn" id="push-on">알림 켜기</button></div>
+      <p class="small warn" id="push-msg" role="status" style="margin-top:8px"></p>`;
+  }
+  const msg = box.querySelector("#push-msg");
+  box.querySelector("#push-on")?.addEventListener("click", async (e) => {
+    e.target.disabled = true; msg.textContent = "켜는 중…";
+    const day = Number(box.querySelector("#push-day").value);
+    try { await enablePush(day); set("note.push", { on: true, day }); drawPush(box); }
+    catch (err) { msg.textContent = err.message; e.target.disabled = false; }
+  });
+  box.querySelector("#push-off")?.addEventListener("click", async (e) => {
+    e.target.disabled = true; msg.textContent = "끄는 중…";
+    try { await disablePush(); set("note.push", { on: false }); drawPush(box); }
+    catch (err) { msg.textContent = err.message; e.target.disabled = false; }
   });
 }
 

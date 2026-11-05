@@ -1,4 +1,5 @@
 // 화면 공용 조각. 데이터는 공식 파일에서 오지만 화면에 넣기 전 항상 이스케이프한다.
+import { pushReady } from "./config.js";
 import { get, set } from "./store.js";
 
 const cache = new Map();
@@ -36,8 +37,8 @@ export function top({ right = "", back = null } = {}) {
 export function footer() {
   return `<footer>
     운영 · 더나음 · 정보 제공만 하며 업체를 중개하지 않습니다.<br>
-    개인정보를 수집하지 않습니다. 입력한 내용은 이 기기에만 저장됩니다.<br>
-    <a href="#/help">도움말</a> · <a href="#/about">출처와 기준일 · 점수 계산 방법</a>
+    ${pushReady() ? "회원가입이 없고, 입력한 내용은 이 기기에만 저장됩니다. 매달 알림을 켠 경우에만 알림 받을 주소를 보관합니다." : "개인정보를 수집하지 않습니다. 입력한 내용은 이 기기에만 저장됩니다."}<br>
+    <a href="#/help">도움말</a> · <a href="#/about">출처와 기준일 · 점수 계산 방법</a> · <a href="#/privacy">개인정보처리방침</a>
   </footer>`;
 }
 

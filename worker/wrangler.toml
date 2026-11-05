@@ -1,0 +1,18 @@
+# 나의 인생 노트 매달 알림 서버. 배포는 .github/workflows/worker.yml 이 한다.
+name = "deonaeum-life-note"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://pthpro0-hash.github.io,http://localhost:8765"
+VAPID_SUBJECT = "https://pthpro0-hash.github.io/deonaeum-funeral-guide/"
+
+# 매일 00:00 UTC = 09:00 KST
+[triggers]
+crons = ["0 0 * * *"]
+
+# id 는 배포 워크플로가 계정에서 찾거나 만들어 채운다.
+[[kv_namespaces]]
+binding = "PUSH"
+id = "__KV_ID__"
