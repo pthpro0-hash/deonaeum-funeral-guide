@@ -230,3 +230,8 @@ label.btn[aria-disabled="true"] { opacity: .55; cursor: default; }
   .msg { background: none; border-color: #999; }
   .kit-sec h3 { margin-top: 18px; }
 }
+.big-code { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 26px; letter-spacing: .12em; text-align: center; padding: 16px 0; margin: 10px 0; border: 1px solid var(--line); background: var(--card); }
+@media print {
+  .seal-card { border: 1px solid #000; padding: 10mm; max-width: 150mm; }
+  .seal-card .big-code { font-size: 22pt; border-color: #000; background: none; }
+}

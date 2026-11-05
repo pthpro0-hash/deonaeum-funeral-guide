@@ -85,6 +85,12 @@ test("소식 전하는 글: 종교 표현과 빈칸", () => {
   assert.match(d, /장지: ____________/);
   assert.match(d, /고마웠어요$/);
   assert.match(obituaryDraft({}), /○○○님께서 .* 별세하셨습니다/);
+  const filled = obituaryDraft({ name: "김OO", date: "2026년 12월 1일", hall: "○○장례식장 3호실", departure: "12월 3일 오전 7시", chief: "김민지" });
+  assert.match(filled, /2026년 12월 1일 별세하셨습니다/);
+  assert.match(filled, /빈소: ○○장례식장 3호실/);
+  assert.match(filled, /발인: 12월 3일 오전 7시/);
+  assert.match(filled, /상주: 김민지/);
+  assert.ok(!filled.includes("____년"));
 });
 
 test("백업: 알려진 키만 저장·복원", () => {

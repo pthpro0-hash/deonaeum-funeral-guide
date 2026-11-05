@@ -108,16 +108,18 @@ export const TERMS = [
   { id: "catholic", label: "선종 (천주교)", verb: "선종하셨습니다" },
 ];
 
-export function obituaryDraft({ name, term = "general", burial, words }) {
+// 지킴이가 그때 채우는 칸(date, hall, departure, chief)은 비워 두면 밑줄로 남는다.
+export function obituaryDraft({ name, term = "general", burial, words, date, hall, departure, chief }) {
   const t = TERMS.find((x) => x.id === term) || TERMS[0];
+  const or = (v, blank) => String(v || "").trim() || blank;
   return [
-    `${String(name || "").trim() || "○○○"}님께서 ____년 __월 __일 ${t.verb}.`,
+    `${or(name, "○○○")}님께서 ${or(date, "____년 __월 __일")} ${t.verb}.`,
     "생전에 베풀어 주신 정에 감사드리며 삼가 알려 드립니다.",
     "",
-    "빈소: ____________",
-    "발인: ____년 __월 __일 __시",
-    `장지: ${String(burial || "").trim() || "____________"}`,
-    "상주: ____________",
+    `빈소: ${or(hall, "____________")}`,
+    `발인: ${or(departure, "____년 __월 __일 __시")}`,
+    `장지: ${or(burial, "____________")}`,
+    `상주: ${or(chief, "____________")}`,
     ...(String(words || "").trim() ? ["", String(words).trim()] : []),
   ].join("\n");
 }

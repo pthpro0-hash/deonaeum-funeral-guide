@@ -1,20 +1,21 @@
 // 나의 인생 노트 (#/note). 지금의 나를 정리해 두는 노트. 모두 이 기기에만 저장한다.
-// 기획: docs/superpowers/specs/2026-11-05-life-note-advanced-plan.md (1단계, 서버 없음)
+// 기획: docs/superpowers/specs/2026-11-05-life-note-advanced-plan.md (1·2단계, 서버 없음)
 // 첫 화면·메뉴·안내 문구에는 "죽음, 부고, 임종, 사후, 고인, 사망, 유품, 생존"을 쓰지 않는다(기획 4.2절).
 import {
   GROUPS, MAX_KEEPERS, NOTE_KEYS, TERMS, buildBackup, keepersDecided, looksLikeBequest, looksLikeSecretNumber,
   normPhone, noticeDue, noticeIcs, noticeText, obituaryDraft, parseBackup, parseCsv, validKeepers, addMonth,
 } from "../lifenote.js";
 import { noteSet, today } from "../notestore.js";
+import { makeCode, seal, unseal } from "../seal.js";
 import { get, set } from "../store.js";
 import { esc, footer, top } from "../ui.js";
-import * as plan from "./plan.js?v=20261105n"; // 옛 plan.js가 캐시에 남아 있어도 새 판을 받도록
+import * as plan from "./plan.js?v=20261105s"; // 옛 plan.js가 캐시에 남아 있어도 새 판을 받도록
 import * as portrait from "./portrait.js";
 
 const SUB = {
   keepers: renderKeepers, notice: renderNotice, keeper: renderKeeperGuide,
   story: renderStory, messages: renderMessages, people: renderPeople, obit: renderObit,
-  assets: renderAssets, kit: renderKit, backup: renderBackup,
+  assets: renderAssets, kit: renderKit, backup: renderBackup, seal: renderSeal,
   wishes: plan.renderWishes, portrait: portrait.render, inherit: plan.renderInherit,
   will: plan.renderWill, willform: plan.renderWillForm, digital: plan.renderDigital, lst: plan.renderLst,
 };
@@ -32,7 +33,7 @@ export function redirectOld(root, sub) {
   location.replace("#/note" + (sub ? "/" + (sub === "print" ? "kit" : sub) : ""));
 }
 
-const owner = () => get("note.profile", {}).name || get("plan.wishes", {}).name || "";
+const owner = (read = get) => read("note.profile", {}).name || read("plan.wishes", {}).name || "";
 const pageUrl = (hash) => location.origin + location.pathname + hash;
 const korDate = (s) => { const [, m, d] = String(s).split("-").map(Number); return `${m}월 ${d}일`; };
 const dash = (p) => p.replace(/^(\d{3})(\d{3,4})(\d{4})$/, "$1-$2-$3");
@@ -58,6 +59,7 @@ const CHAPTERS = [
   { no: "8장", title: "노트 지킴이", items: [
     { href: "keepers", label: "지킴이 바꾸기", done: () => keepersDecided(get("note.keepers", null)) },
     { href: "notice", label: "이번 달 지킴이 안내", done: null },
+    { href: "seal", label: "지킴이에게 노트 파일 보내기", done: () => !!get("note.seal", {}).made },
   ] },
 ];
 
@@ -85,6 +87,7 @@ function renderCover(root) {
       ${updated ? `<dt>마지막으로 다듬은 날</dt><dd>${esc(updated)}</dd>` : ""}
     </dl>
     ${k.mode === "none" ? `<p class="small">지킴이가 없으면 노트는 이 기기에만 있어요. 인쇄본을 가족이 찾기 쉬운 곳에 두세요.</p>` : ""}
+    ${get("note.seal", {}).made && updated > get("note.seal", {}).made ? `<p class="small">지킴이에게 노트 파일을 보낸 뒤로 노트를 고쳤어요. <a href="#/note/seal">새 파일 보내기</a></p>` : ""}
     ${stale ? `<p class="small">마지막으로 다듬은 지 반년이 지났어요. 한 번 다시 읽어 볼까요?</p>` : ""}
     <div style="margin-top:18px">${CHAPTERS.map((c) => `<div class="ch"><span class="ch-no">${c.no}</span><b>${esc(c.title)}</b>
       ${c.items.some((i) => i.done) ? `<span class="ch-st">${c.items.some((i) => i.done?.()) ? "적음" : "비어 있음"}</span>` : ""}</div>
@@ -236,7 +239,8 @@ function renderNotice(root) {
   });
 }
 
-// 지킴이 안내를 받은 분이 여는 화면. 노트 내용은 보이지 않는다.
+// 지킴이 안내를 받은 분이 여는 화면. 잠근 노트 파일을 받았다면 여기서 펼친다.
+// 펼친 노트는 이 화면의 메모리에만 두고 지킴이 기기에 저장하지 않는다.
 function renderKeeperGuide(root) {
   root.innerHTML = `${top({ back: "#/" })}
   <main>
@@ -246,16 +250,221 @@ function renderKeeperGuide(root) {
     <h3>지킴이가 하는 일</h3>
     <ol class="steps">
       <li>인쇄한 노트가 어디 있는지 기억해 두세요. 안내 문구에 보관 장소가 적혀 있어요.</li>
+      <li>노트 파일을 받았다면 휴대폰에 잘 보관해 두세요. 비밀 문구는 봉투 속 카드에 있어요.</li>
       <li>필요한 날이 오면 노트를 펼쳐, 적힌 바람대로 가족과 지인에게 마음과 소식을 전해 주세요.</li>
-      <li>노트에는 소식 전하는 글, 소식 전할 분들, 마지막 인사에 대한 바람, 마음 전하기 메시지가 들어 있어요.</li>
     </ol>
-    <p class="notice">이 화면에서는 노트 내용을 볼 수 없어요. 노트는 쓰신 분의 휴대폰과 인쇄본에만 있습니다.</p>
+
+    <h3>노트 펼치기</h3>
+    <p class="small">받은 노트 파일과 봉투 속 비밀 문구가 있어야 열 수 있어요. 파일은 이 휴대폰 안에서만 풀리고 어디로도 보내지지 않습니다.</p>
+    <label class="btn ghost" style="margin-top:12px">노트 파일 고르기<input type="file" id="k-file" accept=".json,application/json,text/plain" hidden></label>
+    <p class="small" id="k-name" style="margin-top:6px"></p>
+    <input class="search" id="k-code" placeholder="비밀 문구 (예: ABCD-EFGH-JKMN)" autocomplete="off" autocapitalize="characters" spellcheck="false">
+    <button class="btn" id="k-open" style="margin-top:12px">노트 펼치기</button>
+    <p class="small warn" id="k-msg" role="status" style="margin-top:8px"></p>
+    <p class="notice">파일이 없다면 인쇄한 노트를 펼쳐 주세요. 노트는 쓰신 분의 휴대폰과 인쇄본에만 있습니다.</p>
+
     <h3>그날이 오면</h3>
     <p class="small">장례를 치러야 할 때는 더나음 장례안내가 할 일을 시간 순서대로 안내해 드려요. 장례식장, 화장장, 상조회사도 공식 자료로 비교할 수 있습니다.</p>
     <a class="row" href="#/after/start">장례 절차 안내 보기 <i>›</i></a>
     <p class="small" style="margin-top:18px">안내를 그만 받고 싶으면 보내 주신 분께 편하게 말씀해 주세요.</p>
     <p style="margin-top:22px"><a class="ul" href="#/note">나도 인생 노트 써 보기 →</a></p>
   </main>${footer()}`;
+
+  const $ = (s) => root.querySelector(s);
+  let text = null;
+  $("#k-file").addEventListener("change", async (e) => {
+    const f = e.target.files?.[0];
+    text = f ? await f.text() : null;
+    $("#k-name").textContent = f ? `고른 파일: ${f.name}` : "";
+  });
+  $("#k-open").addEventListener("click", async () => {
+    const msg = $("#k-msg");
+    if (!text) { msg.textContent = "먼저 노트 파일을 골라 주세요."; return; }
+    if (!$("#k-code").value.trim()) { msg.textContent = "봉투 속 카드의 비밀 문구를 적어 주세요."; return; }
+    msg.textContent = "푸는 중…";
+    $("#k-open").disabled = true;
+    try {
+      const { made, payload } = await unseal(text, $("#k-code").value);
+      const { data } = parseBackup(JSON.stringify(payload));
+      renderOpened(root, data, made);
+    } catch (err) {
+      msg.textContent = err.message;
+      $("#k-open").disabled = false;
+    }
+  });
+}
+
+// 지킴이 기기에서 펼친 노트. 위에는 소식 전하기 도우미, 아래에는 노트 전체.
+// 이 화면은 그날의 가족용이라 "부고", "빈소" 같은 정식 용어를 쓴다.
+function renderOpened(root, data, made) {
+  const read = (k, fb) => (k in data ? data[k] : fb);
+  const name = owner(read);
+  const obit = read("note.obit", {});
+  const w = read("plan.wishes", {});
+  const fill = { date: "", hall: "", departure: "", burial: obit.burial || (w.burial && w.burial !== plan.LEAVE ? w.burial : ""), chief: "" };
+  const msgs = read("note.messages", {});
+  const ppl = read("note.people", []);
+  const groups = [...new Set([...GROUPS, ...ppl.map((p) => p.group)])].filter((g) => ppl.some((p) => p.group === g && !p.exclude));
+  const withMsg = new Set(groups.filter((g) => String(msgs[g] || "").trim()));
+  const sent = new Set();
+  const canShare = typeof navigator.share === "function";
+
+  const news = (g) => {
+    const base = obituaryDraft({ name, ...obit, ...fill });
+    const m = g && withMsg.has(g) && String(msgs[g] || "").trim();
+    return m ? `${base}\n\n— ${name || "고인"}님이 ${g}에게 남긴 말 —\n${m}` : base;
+  };
+
+  root.innerHTML = `${top({ back: "#/note/keeper" })}
+  <main class="paper">
+    <div class="noprint">
+      <div class="lb" style="margin-top:28px">노트 지킴이</div>
+      <h2 style="margin-top:12px">${esc(name || "")}님의 인생 노트</h2>
+      <p class="small">${made ? `${esc(made)}에 만든 노트입니다. ` : ""}이 화면을 닫으면 다시 파일을 열어야 해요. 노트는 이 휴대폰에 저장되지 않습니다.</p>
+
+      <h3>부고 보내기</h3>
+      <p class="small">빈칸을 채우면 아래 글에 바로 들어갑니다. 모르는 칸은 비워 두셔도 됩니다.</p>
+      <div class="q">돌아가신 날</div><input class="search" data-fill="date" placeholder="예: 2026년 12월 1일" autocomplete="off">
+      <div class="q">빈소</div><input class="search" data-fill="hall" placeholder="예: ○○장례식장 3호실 (주소)" autocomplete="off">
+      <div class="q">발인</div><input class="search" data-fill="departure" placeholder="예: 12월 3일 오전 7시" autocomplete="off">
+      <div class="q">장지</div><input class="search" data-fill="burial" value="${esc(fill.burial)}" autocomplete="off">
+      <div class="q">상주</div><input class="search" data-fill="chief" placeholder="예: 장남 ○○○" autocomplete="off">
+      <div class="q">보낼 글</div>
+      <pre class="msg" id="news">${esc(news(""))}</pre>
+      <div class="acts-row">
+        ${canShare ? `<button class="btn ghost" data-share="">카카오톡 등으로 보내기</button>` : ""}
+        <button class="btn ghost" data-copy="">글 복사</button>
+      </div>
+      <p class="small" id="o-msg" role="status" style="margin-top:8px"></p>
+
+      ${groups.length ? `<h3>모임별로 보내기</h3>
+      <p class="small">${esc(name || "")}님이 적어 둔 분들입니다. 문자를 누르면 글이 채워진 문자 창이 열려요. 보낸 분은 "보냄"으로 표시됩니다.</p>
+      ${groups.map((g) => `<div class="box"><div class="box-h"><span>${esc(g)}</span><span>${ppl.filter((p) => p.group === g && !p.exclude).length}분</span></div>
+        ${withMsg.has(g) ? `<label class="small" style="display:block;padding:6px 0"><input type="checkbox" data-gm="${esc(g)}" checked> ${esc(g)}에게 남긴 말 함께 보내기</label>` : ""}
+        ${ppl.map((p, i) => ({ ...p, i })).filter((p) => p.group === g && !p.exclude).map((p) => `<div class="fac"><div><b>${esc(p.name)}</b></div>
+          <div class="meta">${p.phone ? esc(dash(p.phone)) : "번호 없음 · 직접 연락해 주세요"}</div>
+          <div class="acts">${p.phone ? `<a class="call" data-sms="${p.i}" data-g="${esc(g)}" href="#">문자</a>` : ""}
+            <button class="save" data-done="${p.i}" aria-pressed="false">보냄 표시</button></div></div>`).join("")}
+        <div class="acts-row" style="margin:8px 0 10px">${canShare ? `<button class="btn ghost" data-share="${esc(g)}">${esc(g)}에게 공유</button>` : ""}<button class="btn ghost" data-copy="${esc(g)}">${esc(g)}용 글 복사</button></div>
+      </div>`).join("")}` : ""}
+      ${ppl.some((p) => p.exclude) ? `<p class="small warn" style="margin-top:12px">연락하지 않기를 바라신 분: ${esc(ppl.filter((p) => p.exclude).map((p) => p.name).join(", "))}</p>` : ""}
+      ${String(msgs.special || "").trim() ? `<div class="prod"><b>꼭 전하고 싶은 말</b><p>${esc(msgs.special).replace(/\n/g, "<br>")}</p><p class="small">받으실 분께 직접 전해 주세요.</p></div>` : ""}
+
+      <h3>다음 할 일</h3>
+      <a class="row" href="#/after/start" target="_blank" rel="noopener">장례 절차 안내 (새 창) <i>›</i></a>
+      <button class="btn ghost" id="o-print" style="margin-top:14px">노트 전체 인쇄 · PDF 저장</button>
+      <hr class="rule" style="margin:24px 0">
+      <h3>노트 전체</h3>
+    </div>
+    <div id="o-body">${kitSections([], read)}</div>
+  </main>`;
+
+  const $ = (s) => root.querySelector(s);
+  const msg = $("#o-msg");
+  const mark = (i, on) => {
+    on ? sent.add(i) : sent.delete(i);
+    const b = root.querySelector(`[data-done="${i}"]`);
+    b.setAttribute("aria-pressed", on);
+    b.textContent = on ? "보냄" : "보냄 표시";
+  };
+  root.querySelectorAll("[data-fill]").forEach((el) => el.addEventListener("input", () => { fill[el.dataset.fill] = el.value; $("#news").textContent = news(""); }));
+  root.addEventListener("change", (e) => {
+    const c = e.target.closest("[data-gm]");
+    if (c) c.checked ? withMsg.add(c.dataset.gm) : withMsg.delete(c.dataset.gm);
+  });
+  root.addEventListener("click", async (e) => {
+    const sh = e.target.closest("[data-share]"), cp = e.target.closest("[data-copy]");
+    const sm = e.target.closest("[data-sms]"), dn = e.target.closest("[data-done]");
+    if (sh) { try { await navigator.share({ text: news(sh.dataset.share) }); } catch { /* 닫음 */ } }
+    if (cp) {
+      try { await navigator.clipboard.writeText(news(cp.dataset.copy)); msg.textContent = "글을 복사했어요."; }
+      catch { msg.textContent = "복사하지 못했어요. 글을 길게 눌러 복사해 주세요."; }
+    }
+    if (sm) {
+      e.preventDefault();
+      location.href = `sms:${ppl[+sm.dataset.sms].phone}?&body=${encodeURIComponent(news(sm.dataset.g))}`;
+      mark(+sm.dataset.sms, true);
+    }
+    if (dn) mark(+dn.dataset.done, !sent.has(+dn.dataset.done));
+  });
+  $("#o-print").addEventListener("click", () => window.print());
+  window.scrollTo(0, 0);
+}
+
+// ── 지킴이에게 노트 파일 보내기 ─────────────────────────
+function renderSeal(root) {
+  const k = get("note.keepers", {});
+  const list = validKeepers(k.list);
+  const s = get("note.seal", {});
+  const code = s.code || makeCode();
+  const updated = get("note.profile", {}).updated;
+  const canFiles = typeof navigator.canShare === "function";
+  root.innerHTML = `${top({ back: "#/note" })}
+  <main class="paper">
+    <div class="noprint">
+      <div class="lb" style="margin-top:28px">8장 · 노트 지킴이</div>
+      <h2 style="margin-top:12px">지킴이에게 노트 파일 보내기</h2>
+      <p class="lead">필요한 날 지킴이가 휴대폰에서 노트를 펼치고 소식을 전할 수 있도록, 비밀 문구로 잠근 노트 파일을 미리 보내 둡니다. 비밀 문구가 없으면 아무도 열 수 없어요.</p>
+      ${k.mode !== "set" ? `<div class="empty">아직 지킴이를 정하지 않았어요. <a href="#/note/keepers">지킴이 정하기</a></div>` : `
+      <h3>1. 비밀 문구</h3>
+      <p class="big-code" id="code">${esc(code)}</p>
+      <p class="small">이 문구는 이 기기에만 있어요. 파일과 같은 메신저로 보내지 말고, 아래 카드를 인쇄해 봉투에 넣어 직접 건네세요.</p>
+      <div class="acts-row"><button class="btn ghost" id="card">비밀 문구 카드 인쇄</button>${s.code ? `<button class="btn ghost" id="renew">문구 새로 만들기</button>` : ""}</div>
+      <h3>2. 노트 파일</h3>
+      ${s.made ? `<p class="small">지난번 파일: ${esc(s.made)}에 만듦${updated && updated > s.made ? " · <b>그 뒤로 노트를 고쳤어요. 새 파일을 보내 주세요.</b>" : ""}</p>` : ""}
+      <button class="btn" id="make" style="margin-top:8px">잠근 노트 파일 만들기</button>
+      <p class="small" id="msg" role="status" style="margin-top:8px"></p>
+      <div id="send" hidden>
+        ${canFiles ? list.map((x, i) => `<div class="prod"><b>${esc(x.name)}${x.rel ? ` <span class="faint">· ${esc(x.rel)}</span>` : ""}</b>
+          <div class="acts-row"><button class="btn ghost" data-send="${i}">카카오톡 등으로 파일 보내기</button></div></div>`).join("") : ""}
+        <button class="btn ghost" id="down" style="margin-top:12px">파일 내려받기</button>
+        <p class="why">휴대폰에서 파일 보내기가 안 되면 내려받은 파일을 메신저나 이메일에 첨부해 보내세요. 사진은 파일에 들어가지 않아요.</p>
+      </div>
+      <p class="notice">노트를 고치면 새 파일을 다시 보내 주세요. 지킴이 휴대폰에 있는 파일은 보낸 날의 노트입니다. 문구를 새로 만들면 예전 카드로는 새 파일을 열 수 없어요.</p>`}
+    </div>
+    <section class="print-only seal-card">
+      <h2>인생 노트 비밀 문구</h2>
+      <p class="big-code">${esc(code)}</p>
+      <ol class="guide">
+        <li>휴대폰에서 받은 "인생 노트" 파일을 찾아 둡니다.</li>
+        <li>${esc(pageUrl("#/note/keeper"))} 에 들어갑니다.</li>
+        <li>"노트 파일 고르기"로 파일을 고르고, 위 비밀 문구를 적습니다.</li>
+      </ol>
+      <p class="small">${owner() ? `${esc(owner())}님이 ` : ""}${esc(today())}에 만든 카드입니다. 이 카드는 노트 파일과 따로 보관해 주세요.</p>
+    </section>
+  </main><div class="noprint">${footer()}</div>`;
+  if (k.mode !== "set") return;
+
+  const $ = (sel) => root.querySelector(sel);
+  if (!s.code) set("note.seal", { ...s, code });
+  let file = null;
+  $("#card").addEventListener("click", () => window.print());
+  $("#renew")?.addEventListener("click", () => {
+    if (!confirm("비밀 문구를 새로 만들까요? 지킴이에게 새 카드와 새 파일을 다시 건네야 합니다.")) return;
+    set("note.seal", { code: makeCode() });
+    renderSeal(root);
+  });
+  $("#make").addEventListener("click", async () => {
+    $("#msg").textContent = "잠그는 중…";
+    $("#make").disabled = true;
+    try {
+      const sealed = await seal(buildBackup((key) => get(key, undefined)), code, { made: today() });
+      file = new File([JSON.stringify(sealed)], `인생노트-${owner() || "지킴이용"}-${today()}.json`, { type: "application/json" });
+      set("note.seal", { code, made: today() });
+      $("#msg").textContent = "파일을 만들었어요. 지킴이에게 보내세요.";
+      $("#send").hidden = false;
+    } catch {
+      $("#msg").textContent = "파일을 만들지 못했어요. 브라우저를 최신으로 바꾸거나 다른 브라우저에서 해 보세요.";
+    }
+    $("#make").disabled = false;
+  });
+  root.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-send]");
+    if (!b || !file) return;
+    if (!navigator.canShare({ files: [file] })) { $("#msg").textContent = "이 휴대폰에서는 파일 보내기가 안 돼요. 파일을 내려받아 보내 주세요."; return; }
+    try { await navigator.share({ files: [file], title: "인생 노트" }); } catch { /* 닫음 */ }
+  });
+  $("#down").addEventListener("click", () => file && download(file, file.name));
 }
 
 // ── 글 적는 장 공용 ───────────────────────────────────
@@ -472,15 +681,15 @@ const KIT = [
   { id: "digital", label: "디지털 생활" }, { id: "lst", label: "내 치료에 대한 결정" },
 ];
 
-function kitSections(off) {
+function kitSections(off, read = get) {
   const nl = (s) => esc(s).replace(/\n/g, "<br>");
   const dl = (rows) => rows.length ? `<dl class="kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${nl(v)}</dd>`).join("")}</dl>` : `<p class="small">적은 내용이 없습니다.</p>`;
   const pick = (fields, val) => fields.map((f) => [f.q, val[f.id]]).filter(([, v]) => String(v ?? "").trim());
   const sec = {
-    story: () => dl(pick(STORY, get("note.story", {}))),
-    messages: () => `<p class="small">마음을 전하는 글이며 법적 효력이 있는 유언이 아닙니다.</p>${dl(pick(MSG_FIELDS, get("note.messages", {})))}`,
+    story: () => dl(pick(STORY, read("note.story", {}))),
+    messages: () => `<p class="small">마음을 전하는 글이며 법적 효력이 있는 유언이 아닙니다.</p>${dl(pick(MSG_FIELDS, read("note.messages", {})))}`,
     people: () => {
-      const ppl = get("note.people", []);
+      const ppl = read("note.people", []);
       if (!ppl.length) return `<p class="small">적은 내용이 없습니다.</p>`;
       const groups = [...new Set(ppl.map((p) => p.group))];
       const line = (p) => p.name + (p.phone ? " " + dash(p.phone) : "");
@@ -488,14 +697,14 @@ function kitSections(off) {
       return dl(groups.map((g) => [g, ppl.filter((p) => p.group === g && !p.exclude).map(line).join("\n")]).filter(([, v]) => v))
         + (ex.length ? `<p class="small">연락하지 않을 분: ${esc(ex.map(line).join(", "))}</p>` : "");
     },
-    wishes: () => dl(pick([...plan.FIELDS, ...plan.MEMOS], get("plan.wishes", {}))),
-    obit: () => `<pre class="msg">${esc(obituaryDraft({ name: owner(), ...get("note.obit", {}) }))}</pre>`,
-    assets: () => dl(pick(ASSETS, get("note.assets", {}))),
+    wishes: () => dl(pick([...plan.FIELDS, ...plan.MEMOS], read("plan.wishes", {}))),
+    obit: () => `<pre class="msg">${esc(obituaryDraft({ name: owner(read), ...read("note.obit", {}) }))}</pre>`,
+    assets: () => dl(pick(ASSETS, read("note.assets", {}))),
     digital: () => {
-      const on = get("plan.digital", []);
+      const on = read("plan.digital", []);
       return dl(plan.DIGITAL.map((d) => [d.t, on.includes(d.id) ? "해 두었어요" : "아직"]));
     },
-    lst: () => dl([["사전연명의료의향서", get("note.lst", "") || "적지 않음"]]),
+    lst: () => dl([["사전연명의료의향서", read("note.lst", "") || "적지 않음"]]),
   };
   return KIT.filter((x) => !off.includes(x.id)).map((x) => `<section class="kit-sec"><h3>${esc(x.label)}</h3>${sec[x.id]()}</section>`).join("");
 }
