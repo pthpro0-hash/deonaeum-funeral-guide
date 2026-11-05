@@ -1,74 +1,43 @@
-// 내 부고 준비 (Part 3-A). 모두 이 기기에만 저장하고, 가족에게는 인쇄·PDF로 전한다.
+// 나의 인생 노트의 장(章) 화면들. 표지와 새 장은 note.js에 있고, 이 파일은 기존 Part 3-A 화면을 담는다.
+// 모두 이 기기에만 저장하고, 가족에게는 인쇄·PDF로 전한다.
 // 법 조문과 기관 안내는 2026-11-02에 원문을 열어 확인한 것만 쓴다.
 import { BURIALS, RITES } from "../content.js";
 import { legalShares } from "../inherit.js";
-import { get, set } from "../store.js";
+import { noteSet as set } from "../notestore.js";
+import { get } from "../store.js";
 import { esc, footer, top, won } from "../ui.js";
-import * as portrait from "./portrait.js";
 
 const CHECKED = "2026-11-02";
 const LAW = "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415";
 const lawSrc = (arts) => `<div class="src">출처: <a href="${LAW}" target="_blank" rel="noopener">국가법령정보센터 민법</a> ${esc(arts)}
   ([시행 2026. 3. 17.] [법률 제21454호], ${CHECKED} 확인)</div>`;
 
-const NOT_WILL = `<p class="notice">이 서비스에 적은 글은 <b>유언이 아닙니다.</b> 민법은 자필증서·녹음·공정증서·비밀증서·구수증서 다섯 방식의 유언만 인정합니다(제1065조).
-  재산에 관한 뜻은 그 방식대로 따로 남기세요. <a href="#/plan/will">유언 방식 보기</a></p>`;
-
-const SUB = {
-  wishes: renderWishes, print: renderPrint, inherit: renderInherit,
-  will: renderWill, willform: renderWillForm, digital: renderDigital, lst: renderLst,
-  portrait: portrait.render,
-};
-
-export function render(root, sub) {
-  return (SUB[sub] || renderMenu)(root);
-}
-
-function renderMenu(root) {
-  const w = get("plan.wishes", {});
-  const filled = [...FIELDS, ...MEMOS].filter((f) => w[f.id]).length;
-  root.innerHTML = `${top({ back: "#/" })}
-  <main>
-    <div class="lb" style="margin-top:28px">내 부고 준비</div>
-    <h2 style="margin-top:12px">나의 마지막을 미리 적어 두기</h2>
-    <p class="lead">남은 가족이 덜 헤매도록 바라는 장례 방식과 정리할 일을 적어 둡니다. 회원가입 없이 이 기기에만 저장되고, 가족에게는 인쇄하거나 PDF로 저장해 직접 전합니다.</p>
-    <div style="margin-top:22px">
-      <a class="row" href="#/plan/wishes">장례에 대한 나의 바람 <i>${filled ? `${filled}개 적음 ›` : "›"}</i></a>
-      <a class="row" href="#/plan/portrait">영정사진 만들기 <i>›</i></a>
-      <a class="row" href="#/plan/print">가족에게 전할 문서 (인쇄·PDF) <i>›</i></a>
-      <a class="row" href="#/plan/inherit">법정상속분 계산 <i>›</i></a>
-      <a class="row" href="#/plan/will">유언의 다섯 가지 법적 방식 <i>›</i></a>
-      <a class="row" href="#/plan/digital">디지털 자산 정리 <i>›</i></a>
-      <a class="row" href="#/plan/lst">사전연명의료의향서 <i>›</i></a>
-    </div>
-    ${NOT_WILL}
-  </main>${footer()}`;
-}
+export const NOT_WILL = `<p class="notice">이 노트에 적은 글은 <b>유언이 아닙니다.</b> 민법은 자필증서·녹음·공정증서·비밀증서·구수증서 다섯 방식의 유언만 인정합니다(제1065조).
+  재산에 관한 뜻은 그 방식대로 따로 남기세요. <a href="#/note/will">법대로 남기는 방법 보기</a></p>`;
 
 // ── 장례 선호 ─────────────────────────────────────────
-const LEAVE = "가족에게 맡김";
-const FIELDS = [
+export const LEAVE = "가족에게 맡김";
+export const FIELDS = [
   { id: "method", q: "장법", opts: ["화장", "매장", LEAVE] },
   { id: "rite", q: "장례 방식(종교)", opts: [...RITES.map((r) => r.title), "종교 없이 간소하게", LEAVE] },
   { id: "burial", q: "모실 곳", opts: [...BURIALS.map((b) => b.title), LEAVE] },
   { id: "shroud", q: "수의", opts: ["전통 수의", "평소 즐겨 입던 옷", LEAVE] },
   { id: "guests", q: "조문객 범위", opts: ["널리 알려 주세요", "가족과 가까운 지인만", "가족끼리 조용히", LEAVE] },
 ];
-const MEMOS = [
+export const MEMOS = [
   { id: "coffin", q: "수의·관에 대해 더 적을 것", ph: "예: 관은 가장 간소한 것으로" },
-  { id: "photo", q: "영정 사진", ph: "예: 휴대폰 사진첩 '가족여행 2024' 앨범의 바닷가 사진" },
+  { id: "photo", q: "나를 기억할 사진 (영정사진)", ph: "예: 휴대폰 사진첩 '가족여행 2024' 앨범의 바닷가 사진" },
   { id: "notify", q: "꼭 알려 줬으면 하는 곳", ph: "예: 고향 친구 모임, 다니던 성당 (연락처는 적지 않아도 됩니다)" },
   { id: "memo", q: "가족에게 남기는 말", ph: "장례와 관련해 바라는 점을 자유롭게 적으세요.", area: true },
 ];
 
-function renderWishes(root) {
+export function renderWishes(root) {
   const w = get("plan.wishes", {});
-  root.innerHTML = `${top({ back: "#/plan" })}
+  root.innerHTML = `${top({ back: "#/note" })}
   <main>
-    <h2>장례에 대한 나의 바람</h2>
-    <p class="lead">고르거나 적는 대로 이 기기에 바로 저장됩니다. 정하기 어려운 항목은 "${LEAVE}"을 고르거나 비워 두세요.</p>
-    <div class="q">이름 (인쇄할 문서에만 쓰입니다)</div>
-    <input class="search" data-memo="name" value="${esc(w.name || "")}" maxlength="30" autocomplete="off">
+    <div class="lb" style="margin-top:28px">4장 · 나다운 마지막 인사</div>
+    <h2 style="margin-top:12px">바라는 장례 방식</h2>
+    <p class="lead">어떤 모습으로 인사하고 싶은지 적어 두세요. 고르는 대로 이 기기에 저장되고, 언제든 고칠 수 있어요. 정하기 어려운 항목은 "${LEAVE}"을 고르거나 비워 두세요.</p>
     ${FIELDS.map((f) => `<div class="q">${esc(f.q)}</div>
       <div class="filters" data-pick="${f.id}">${f.opts.map((o) =>
         `<button class="chip" data-v="${esc(o)}" aria-pressed="${w[f.id] === o}">${esc(o)}</button>`).join("")}</div>`).join("")}
@@ -77,7 +46,7 @@ function renderWishes(root) {
         ? `<textarea class="search memo" data-memo="${m.id}" rows="5" placeholder="${esc(m.ph)}">${esc(w[m.id] || "")}</textarea>`
         : `<input class="search" data-memo="${m.id}" value="${esc(w[m.id] || "")}" placeholder="${esc(m.ph)}" autocomplete="off">`}`).join("")}
     <div class="why">장례 방식과 모실 곳의 차이는 <a class="ul sub" href="#/before/rites">장례 방식 · 장지 알아두기</a>에서 볼 수 있습니다.</div>
-    <div style="margin-top:30px"><a class="btn" href="#/plan/print">가족에게 전할 문서 보기</a></div>
+    <div style="margin-top:30px"><a class="btn" href="#/note/kit">가족에게 건네는 노트 보기</a></div>
     <p class="small" id="saved" style="text-align:center;margin-top:10px">이 기기에 저장됨</p>
     ${NOT_WILL}
   </main>${footer()}`;
@@ -98,31 +67,6 @@ function renderWishes(root) {
   root.querySelectorAll("[data-memo]").forEach((el) => el.addEventListener("input", () => save(el.dataset.memo, el.value)));
 }
 
-function renderPrint(root) {
-  const w = get("plan.wishes", {});
-  const rows = [...FIELDS, ...MEMOS].map((f) => [f.q, w[f.id]]).filter(([, v]) => v);
-  root.innerHTML = `${top({ back: "#/plan" })}
-  <main class="paper">
-    <div class="noprint">
-      <p class="lead">아래 문서를 인쇄하거나, 인쇄 창에서 "PDF로 저장"을 골라 가족에게 직접 전하세요. 서버에는 아무것도 올라가지 않습니다.</p>
-      <div style="display:flex;gap:8px;margin:16px 0 8px">
-        <button class="btn" id="doprint">인쇄 · PDF 저장</button>
-        <a class="btn ghost" href="#/plan/wishes">고치기</a>
-      </div>
-    </div>
-    <h2>장례에 대한 저의 바람</h2>
-    <p class="small">${w.name ? `${esc(w.name)} · ` : ""}작성일 ${esc(w.updated || new Date().toISOString().slice(0, 10))}</p>
-    ${rows.length
-      ? `<dl class="kv print-kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v).replace(/\n/g, "<br>")}</dd>`).join("")}</dl>`
-      : `<div class="empty">아직 적은 내용이 없습니다. <a href="#/plan/wishes">바람 적기</a></div>`}
-    <p class="notice">이 문서는 장례 방식에 대한 바람을 가족에게 알리려고 적은 것이며, 법적 효력이 있는 유언이 아닙니다.
-      가족이 상황에 맞게 정할 수 있습니다. 재산에 관한 뜻은 민법이 정한 방식의 유언으로 따로 남겨야 합니다(민법 제1065조).</p>
-    <p class="small print-only">더나음 장례안내 · pthpro0-hash.github.io/deonaeum-funeral-guide</p>
-  </main>
-  <div class="noprint">${footer()}</div>`;
-  root.querySelector("#doprint").addEventListener("click", () => window.print());
-}
-
 // ── 법정상속분 ────────────────────────────────────────
 const COUNT = [
   { id: "children", q: "자녀", max: 10, why: "먼저 세상을 떠난 자녀가 있으면 그 자녀의 자녀와 배우자가 대신 상속합니다(대습상속, 제1001조). 이 계산기는 대습상속을 나누어 계산하지 않습니다." },
@@ -130,14 +74,15 @@ const COUNT = [
   { id: "siblings", q: "형제자매", max: 10, why: "" },
 ];
 
-function renderInherit(root) {
+export function renderInherit(root) {
   const fam = get("plan.family", { spouse: false, children: 0, ascendants: 0, siblings: 0, amount: "" });
   const sel = (id, max, v) => `<select class="num" data-n="${id}" aria-label="${id}">${Array.from({ length: max + 1 }, (_, i) =>
     `<option value="${i}"${i === v ? " selected" : ""}>${i}명</option>`).join("")}</select>`;
-  root.innerHTML = `${top({ back: "#/plan" })}
+  root.innerHTML = `${top({ back: "#/note" })}
   <main>
-    <h2>법정상속분 계산</h2>
-    <p class="lead">유언이나 상속인끼리의 협의가 없을 때 민법이 정한 상속 순위와 비율입니다. 살아 계신 가족만 넣으세요.</p>
+    <div class="lb" style="margin-top:28px">6장 · 재산과 상속</div>
+    <h2 style="margin-top:12px">우리 가족 상속 미리 보기</h2>
+    <p class="lead">유언이나 가족끼리의 협의가 없을 때 민법이 정한 상속 순서와 비율(법정상속분)을 미리 봅니다. 살아 계신 가족만 넣으세요.</p>
 
     <div class="q">배우자</div>
     <div class="chips" id="sp">
@@ -205,12 +150,13 @@ const WILLS = [
     watch: "증인이나 이해관계인이 급박한 사유가 끝난 날부터 7일 안에 법원에 검인을 신청해야 합니다." },
 ];
 
-function renderWill(root) {
-  root.innerHTML = `${top({ back: "#/plan" })}
+export function renderWill(root) {
+  root.innerHTML = `${top({ back: "#/note" })}
   <main>
-    <h2>유언의 다섯 가지 법적 방식</h2>
-    <p class="lead">민법은 자필증서, 녹음, 공정증서, 비밀증서, 구수증서 다섯 가지 방식의 유언만 인정합니다(제1065조). 방식을 지키지 않은 유언은 효력을 인정받기 어렵습니다.</p>
-    <p class="notice" style="margin-top:14px"><b>이 서비스에서 적거나 인쇄한 어떤 글도 유언이 아닙니다.</b> 휴대폰 메모, 메신저, 단순한 영상도 위 방식을 갖추지 않으면 유언으로 인정받기 어렵습니다.</p>
+    <div class="lb" style="margin-top:28px">6장 · 재산과 상속</div>
+    <h2 style="margin-top:12px">내 뜻을 법대로 남기는 방법</h2>
+    <p class="lead">재산에 관한 뜻은 유언으로 남겨야 효력이 있어요. 민법은 자필증서, 녹음, 공정증서, 비밀증서, 구수증서 다섯 가지 방식의 유언만 인정합니다(제1065조). 방식을 지키지 않은 유언은 효력을 인정받기 어렵습니다.</p>
+    <p class="notice" style="margin-top:14px"><b>이 노트에서 적거나 인쇄한 어떤 글도 유언이 아닙니다.</b> 휴대폰 메모, 메신저, 단순한 영상도 위 방식을 갖추지 않으면 유언으로 인정받기 어렵습니다.</p>
     ${WILLS.map((x) => `<div class="prod"><b>${esc(x.title)} <span class="faint">· ${esc(x.art)}</span></b>
       <p>${esc(x.how)}</p><p class="warn-t">${esc(x.watch)}</p></div>`).join("")}
 
@@ -220,7 +166,7 @@ function renderWill(root) {
     <h3>자필 유언 작성 체크리스트</h3>
     <p class="small">체크는 이 기기에만 저장됩니다. 유언의 내용은 여기에 적지 말고 종이에 직접 쓰세요.</p>
     <div id="wcl">${WILL_CHECK.map((c) => checkItem("plan.willcheck", c)).join("")}</div>
-    <div style="margin-top:22px"><a class="btn ghost" href="#/plan/willform">인쇄용 안내지와 빈 종이 보기</a></div>
+    <div style="margin-top:22px"><a class="btn ghost" href="#/note/willform">인쇄용 안내지와 빈 종이 보기</a></div>
     <p class="notice">이 안내는 민법 조문을 쉽게 옮긴 것이며 법률 자문이 아닙니다. 재산이 많거나 가족 관계가 복잡하면 변호사·공증인과 상의하세요.</p>
     ${lawSrc("제1065조~제1072조, 제1091조")}
   </main>${footer()}`;
@@ -254,8 +200,8 @@ function bindChecks(root, key) {
   });
 }
 
-function renderWillForm(root) {
-  root.innerHTML = `${top({ back: "#/plan/will" })}
+export function renderWillForm(root) {
+  root.innerHTML = `${top({ back: "#/note/will" })}
   <main class="paper">
     <div class="noprint">
       <p class="lead">1쪽은 안내지, 2쪽은 아무 글자도 없는 줄 종이입니다. 인쇄한 뒤 유언 본문은 2쪽(또는 아무 백지)에 직접 손으로 쓰세요.</p>
@@ -285,7 +231,7 @@ function renderWillForm(root) {
 
 // ── 디지털 자산 ───────────────────────────────────────
 // 링크는 2026-11-02에 열어 내용을 확인한 공식 도움말만 둔다.
-const DIGITAL = [
+export const DIGITAL = [
   { id: "phone", t: "휴대폰 잠금 해제 방법을 가족 한 사람과 정해 두기",
     d: "비밀번호는 이 서비스나 메모 앱에 적지 마세요. 봉투에 넣어 보관하는 등 직접 전할 방법을 정합니다." },
   { id: "google", t: "Google 휴면 계정 관리자 설정",
@@ -313,11 +259,12 @@ const DIGITAL = [
     d: "어느 거래소나 지갑을 쓰는지 가족이 알 수 있게 합니다. 복구 문구나 비밀번호는 온라인에 적지 말고, 안전한 전달 방법을 전문가와 상의하세요." },
 ];
 
-function renderDigital(root) {
-  root.innerHTML = `${top({ back: "#/plan" })}
+export function renderDigital(root) {
+  root.innerHTML = `${top({ back: "#/note" })}
   <main>
-    <h2>디지털 자산 정리</h2>
-    <p class="lead">계정과 사진, 구독은 가족이 나중에 찾기 가장 어려운 것들입니다. 미리 할 수 있는 설정부터 하나씩 해 두세요. 체크는 이 기기에만 저장됩니다.</p>
+    <div class="lb" style="margin-top:28px">7장</div>
+    <h2 style="margin-top:12px">내 디지털 생활 정리</h2>
+    <p class="lead">계정과 사진, 구독은 나중에 가족이 찾기 가장 어려운 것들이에요. 지금 할 수 있는 설정부터 하나씩 해 두세요. 체크는 이 기기에만 저장됩니다.</p>
     <div style="margin-top:16px">${DIGITAL.map((c) => {
       const on = get("plan.digital", []).includes(c.id);
       return `<label class="task${on ? " done" : ""}"><input type="checkbox" data-c="${c.id}"${on ? " checked" : ""}>
@@ -330,13 +277,18 @@ function renderDigital(root) {
   bindChecks(root, "plan.digital");
 }
 
+export const LST_STATUS = ["등록했어요", "아직이에요", "하지 않기로 했어요"];
+
 // ── 사전연명의료의향서 ─────────────────────────────────
-function renderLst(root) {
+export function renderLst(root) {
   const L = (p) => `https://www.lst.go.kr/addt/${p}.do`;
-  root.innerHTML = `${top({ back: "#/plan" })}
+  root.innerHTML = `${top({ back: "#/note" })}
   <main>
-    <h2>사전연명의료의향서</h2>
-    <p class="lead">나중에 임종 과정에 있는 환자가 되었을 때 연명의료와 호스피스에 관한 내 뜻을 미리 문서로 남겨 두는 제도입니다. 19세 이상이면 누구나 쓸 수 있습니다.</p>
+    <div class="lb" style="margin-top:28px">5장</div>
+    <h2 style="margin-top:12px">내 치료에 대한 결정</h2>
+    <p class="lead">삶의 마지막 시기에 받을 치료에 대해 내 뜻을 미리 남겨 두는 제도가 있어요. 사전연명의료의향서라고 하며, 19세 이상이면 누구나 쓸 수 있습니다. 법령상으로는 임종 과정에 있는 환자가 되었을 때의 연명의료와 호스피스에 관한 뜻입니다.</p>
+    <div class="q">내 등록 상태 (인쇄본에 들어가요)</div>
+    <div class="filters" id="lst-st">${LST_STATUS.map((x) => `<button class="chip" data-v="${esc(x)}" aria-pressed="${get("note.lst", "") === x}">${esc(x)}</button>`).join("")}</div>
 
     <h3>어떻게 쓰나요</h3>
     <div class="prod"><b>등록기관에 직접 방문</b><p>보건복지부가 지정한 사전연명의료의향서 등록기관을 찾아가 충분한 설명을 듣고 본인이 직접 작성합니다. 신분증을 가져갑니다.</p></div>
@@ -355,4 +307,11 @@ function renderLst(root) {
     <p class="small" style="margin-top:14px">국립연명의료관리기관 대표전화 <a href="tel:18550075">1855-0075</a></p>
     <div class="src">출처: <a href="https://www.lst.go.kr" target="_blank" rel="noopener">국립연명의료관리기관</a> 안내 페이지 (${CHECKED} 확인)</div>
   </main>${footer()}`;
+  root.querySelector("#lst-st").addEventListener("click", (e) => {
+    const b = e.target.closest(".chip");
+    if (!b) return;
+    const on = b.getAttribute("aria-pressed") !== "true";
+    root.querySelectorAll("#lst-st .chip").forEach((x) => x.setAttribute("aria-pressed", on && x === b));
+    set("note.lst", on ? b.dataset.v : "");
+  });
 }

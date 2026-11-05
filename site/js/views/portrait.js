@@ -1,4 +1,4 @@
-// 내 부고 → 영정사진 만들기. 사진은 이 기기 안에서만 처리하고 최대 3장까지 보관한다.
+// 인생 노트 4장 → 나를 기억할 사진(영정사진). 사진은 이 기기 안에서만 처리하고 최대 3장까지 보관한다.
 import { DEFAULTS, FRAMES, MAX_ZOOM, OUT_H, OUT_W, cropRect, decode, draw, photoBox, printQuality } from "../portrait.js";
 import { MAX_PORTRAITS, deletePortrait, listPortraits, putPortrait } from "../photos.js";
 import { esc, footer, top } from "../ui.js";
@@ -16,11 +16,11 @@ const TIPS = `<ul class="steps">
 export async function render(root) {
   const list = await listPortraits();
   const full = list.length >= MAX_PORTRAITS;
-  root.innerHTML = `${top({ back: "#/plan" })}
+  root.innerHTML = `${top({ back: "#/note" })}
   <main>
     <div class="noprint">
-      <div class="lb" style="margin-top:28px">내 부고 준비</div>
-      <h2 style="margin-top:12px">영정사진 만들기</h2>
+      <div class="lb" style="margin-top:28px">4장 · 나다운 마지막 인사</div>
+      <h2 style="margin-top:12px">나를 기억할 사진</h2>
       <p class="lead">사진을 올리면 영정사진 비율(8×10인치)로 자르고 흑백·액자·근조 리본을 입혀 드립니다. 사진은 <b>이 기기 안에서만</b> 처리되며 서버로 보내지 않습니다. 최대 ${MAX_PORTRAITS}장까지 보관할 수 있습니다.</p>
       <div class="pt-list" id="pt-list">${list.length ? list.map((p, i) => `<div class="pt-item" data-id="${esc(p.id)}">
           <canvas width="240" height="300" aria-label="영정사진 ${i + 1}"></canvas>
@@ -78,7 +78,7 @@ async function editor(root, rec, isNew) {
   const st = { ...DEFAULTS, ...rec.settings };
   const chips = (name, items, cur) => items.map((x) =>
     `<button class="chip" data-${name}="${x.id}" aria-pressed="${String(x.id) === String(cur)}">${x.label}</button>`).join("");
-  root.innerHTML = `${top({ back: "#/plan/portrait" })}
+  root.innerHTML = `${top({ back: "#/note/portrait" })}
   <main>
     <h2 style="margin-top:8px">${isNew ? "영정사진 만들기" : "영정사진 고치기"}</h2>
     <p class="small">사진을 끌어서 얼굴 위치를 맞추고, 아래에서 크기와 색을 고르세요.</p>
@@ -96,7 +96,7 @@ async function editor(root, rec, isNew) {
 
     <div style="display:flex;gap:8px;margin-top:28px">
       <button class="btn" id="save">이 기기에 저장</button>
-      <a class="btn ghost" href="#/plan/portrait">취소</a>
+      <a class="btn ghost" href="#/note/portrait">취소</a>
     </div>
     <p class="small" id="pt-msg" role="status" style="margin-top:10px"></p>
   </main>${footer()}`;
@@ -151,7 +151,7 @@ async function editor(root, rec, isNew) {
     }
   });
   // 편집 화면은 주소가 목록과 같아서, 뒤로·취소를 누르면 직접 목록을 다시 그린다
-  root.querySelectorAll('a[href="#/plan/portrait"]').forEach((a) => a.addEventListener("click", (e) => {
+  root.querySelectorAll('a[href="#/note/portrait"]').forEach((a) => a.addEventListener("click", (e) => {
     e.preventDefault();
     backToList(root);
   }));

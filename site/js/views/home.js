@@ -16,10 +16,10 @@ export function render(root) {
     <p class="lead" style="margin-bottom:18px">장례식장과 상조회사를 차분히 비교해 두세요.<br>공식 공공데이터와 공정거래위원회 공시만 씁니다.</p>
     <a class="ul" href="#/before">준비 시작하기 →</a>
     <hr class="rule">
-    <div class="lb">내 부고 준비</div>
-    <h2 style="margin-top:12px">나의 마지막을 적어 두기</h2>
-    <p class="lead" style="margin-bottom:18px">바라는 장례 방식, 영정사진, 법정상속분, 유언 방식, 디지털 자산과 사전연명의료의향서까지.<br>이 기기에만 저장하고, 인쇄해 가족에게 전합니다.</p>
-    <a class="ul" href="#/plan">적어 두기 →</a>
+    <div class="lb">나의 인생 노트</div>
+    <h2 style="margin-top:12px">지금의 나를 정리해 두기</h2>
+    <p class="lead" style="margin-bottom:18px">살아온 이야기, 고마운 사람, 나다운 마지막 인사, 재산과 디지털 생활까지 한 권에.<br>이 기기에만 저장하고, 인쇄해 가족에게 건넵니다.</p>
+    <a class="ul" href="#/note">노트 펼치기 →</a>
   </main>
   ${footer()}`;
 }

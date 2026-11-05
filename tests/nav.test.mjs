@@ -7,8 +7,8 @@ test("각 영역의 하위 화면도 같은 칸으로 표시한다", () => {
   assert.equal(navKey("/after/start"), "after");
   assert.equal(navKey("/after/d2"), "after");
   assert.equal(navKey("/before/sangjo/s12"), "before");
-  assert.equal(navKey("/plan"), "plan");
-  assert.equal(navKey("/plan/will"), "plan");
+  assert.equal(navKey("/note"), "note");
+  assert.equal(navKey("/note/will"), "note");
   assert.equal(navKey("/help"), "help");
 });
 
@@ -19,5 +19,5 @@ test("홈과 출처 화면은 어느 칸도 아니다", () => {
 
 test("이름이 비슷한 다른 경로를 잘못 고르지 않는다", () => {
   assert.equal(navKey("/afterwards"), null);
-  assert.equal(navKey("/planner"), null);
+  assert.equal(navKey("/notes"), null);
 });

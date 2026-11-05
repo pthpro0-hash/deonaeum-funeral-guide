@@ -2,7 +2,7 @@
 export const NAV = [
   { key: "after", prefix: "/after" },
   { key: "before", prefix: "/before" },
-  { key: "plan", prefix: "/plan" },
+  { key: "note", prefix: "/note" },
   { key: "help", prefix: "/help" },
 ];
 
