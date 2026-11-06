@@ -1,6 +1,7 @@
 :root {
   --paper: #f5f2ec; --ink: #2a2824; --sub: #6d675d; --faint: #a39c90;
-  --line: #dcd5c8; --soft: #ece7de; --warn: #8a3b2a; --card: rgba(255,255,255,.45);
+  --line: #dcd5c8; --soft: #ece7de;
+  --field: #fffdf9; --edge: #c4baaa; /* 누르거나 적는 칸: 종이보다 밝은 바탕 + 또렷한 테두리 */ --warn: #8a3b2a; --card: rgba(255,255,255,.45);
   --serif: "Noto Serif KR", serif;
   --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
 }
@@ -12,7 +13,7 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.27  0 0 0 0 0.22  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E");
 }
 a { color: inherit; }
-button, select, input { font: inherit; color: inherit; }
+button, select, input, textarea { font: inherit; color: inherit; }
 .app { max-width: 520px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding: 0 22px; }
 
 /* 상단 고정 메뉴 · 어느 화면에서나 보인다.
@@ -56,7 +57,7 @@ p { margin: 8px 0; }
 
 /* 버튼 */
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-.btn { display: block; width: 100%; text-align: center; background: var(--ink); color: var(--paper); border: 0; border-radius: 2px; padding: 17px 0; font-size: 16px; font-weight: 600; letter-spacing: .04em; text-decoration: none; cursor: pointer; }
+.btn { display: block; width: 100%; text-align: center; background: var(--ink); color: var(--paper); border: 0; border-radius: 8px; padding: 17px 0; font-size: 16px; font-weight: 600; letter-spacing: .04em; text-decoration: none; cursor: pointer; }
 .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); padding: 15.5px 0; }
 .ul { color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--ink); padding-bottom: 2px; font-size: 15px; font-weight: 600; }
 .ul.sub { color: var(--sub); border-color: var(--sub); font-weight: 500; font-size: inherit; }
@@ -68,7 +69,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 /* 선택 칩 */
 .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.chip { border: 1px solid var(--faint); background: transparent; border-radius: 2px; padding: 13px 0; font-size: 15px; color: var(--ink); cursor: pointer; }
+.chip { border: 1px solid var(--edge); background: var(--field); border-radius: 8px; padding: 13px 0; font-size: 15px; color: var(--ink); cursor: pointer; }
 .chip[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; }
 .filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 4px; }
 .filters .chip { padding: 8px 13px; font-size: 14px; }
@@ -76,7 +77,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 /* 지역 선택 */
 .region { display: flex; gap: 8px; }
-.region select { flex: 1; min-width: 0; appearance: none; background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a39c90'/%3E%3C/svg%3E") no-repeat right 4px center; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; padding: 10px 18px 10px 2px; font-size: 14.5px; }
+.region select { flex: 1; min-width: 0; appearance: none; background: var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%232a2824'/%3E%3C/svg%3E") no-repeat right 14px center; border: 1px solid var(--edge); border-radius: 8px; padding: 12px 34px 12px 14px; font-size: 16px; }
 .why { font-size: 12.5px; color: var(--sub); line-height: 1.65; margin-top: 10px; }
 .gps { margin-top: 12px; }
 
@@ -115,8 +116,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .empty { font-size: 13px; color: var(--sub); padding: 12px 0; }
 
 /* 목록 행 */
-.row { display: flex; justify-content: space-between; align-items: center; padding: 17px 0; border-top: 1px solid var(--line); text-decoration: none; font-size: 16px; font-weight: 600; }
-.row i { font-style: normal; color: var(--sub); font-size: 14px; font-weight: 500; }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 8px; padding: 16px; background: var(--field); border: 1px solid var(--edge); border-radius: 8px; box-shadow: 0 1px 0 rgba(42, 40, 36, .06); text-decoration: none; font-size: 16px; font-weight: 600; cursor: pointer; }
+.row:hover, .row:active { border-color: var(--ink); }
+.row:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.row i { font-style: normal; color: var(--ink); font-size: 14px; font-weight: 500; white-space: nowrap; }
 
 /* 상조 */
 .sj { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: center; padding: 15px 0; border-top: 1px solid var(--soft); text-decoration: none; }
@@ -139,7 +142,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .prod { padding: 12px 0; border-top: 1px solid var(--soft); }
 .prod b { font-size: 14px; }
 .prod p { font-size: 12.5px; color: var(--sub); margin: 3px 0 0; line-height: 1.6; }
-.search { width: 100%; border: 0; border-bottom: 1px solid var(--ink); background: transparent; padding: 10px 2px; font-size: 14.5px; border-radius: 0; margin-top: 12px; }
+.search { display: block; width: 100%; margin-top: 10px; padding: 12px 14px; background: var(--field); border: 1px solid var(--edge); border-radius: 8px; font-size: 16px; line-height: 1.5; }
+.search::placeholder { color: var(--faint); }
+.search:focus, .num:focus, .region select:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(42, 40, 36, .12); }
 details summary { cursor: pointer; font-size: 15px; font-weight: 500; padding: 14px 0; border-top: 1px solid var(--line); list-style: none; }
 details summary::-webkit-details-marker { display: none; }
 details summary::after { content: " ▾"; color: var(--sub); }
@@ -154,8 +159,8 @@ footer a { color: var(--sub); }
 @media (min-width: 560px) { .app { padding: 0 32px; } .stages { margin: 14px -32px 0; padding: 0 32px; } }
 
 /* 인생 노트 장 화면 (유언·상속·인쇄) */
-textarea.search { resize: vertical; line-height: 1.6; border: 1px solid var(--line); padding: 10px; }
-.num { appearance: none; background: transparent; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; padding: 8px 2px; font-size: 14.5px; min-width: 96px; }
+textarea.search { resize: vertical; line-height: 1.6; min-height: 96px; }
+.num { appearance: none; background: var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%232a2824'/%3E%3C/svg%3E") no-repeat right 14px center; border: 1px solid var(--edge); border-radius: 8px; padding: 12px 34px 12px 14px; font-size: 16px; min-width: 120px; }
 .warn-t { color: var(--warn) !important; }
 .guide { padding-left: 20px; font-size: 14px; line-height: 1.9; }
 .print-only { display: none; }
@@ -213,11 +218,11 @@ details.faq p { font-size: 13.5px; color: var(--sub); line-height: 1.75; margin:
 label.btn[aria-disabled="true"] { opacity: .55; cursor: default; }
 
 /* 나의 인생 노트 */
-.ch { display: flex; align-items: baseline; gap: 10px; padding: 20px 0 6px; border-top: 1px solid var(--line); }
+.ch { display: flex; align-items: baseline; gap: 10px; padding: 26px 0 2px; }
 .ch-no { font-family: var(--serif); font-size: 13px; color: var(--sub); letter-spacing: .08em; }
 .ch b { font-family: var(--serif); font-weight: 500; font-size: 17px; }
 .ch-st { margin-left: auto; font-size: 12px; color: var(--faint); }
-.row.sub { font-size: 14.5px; font-weight: 400; padding: 12px 0; }
+.row.sub { font-size: 15px; font-weight: 500; padding: 14px 16px; }
 .nb { margin-top: 18px; padding: 14px; }
 .nb .btn { margin-top: 10px; }
 .kp { margin-top: 18px; }
