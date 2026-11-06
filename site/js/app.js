@@ -1,11 +1,11 @@
 // 해시 라우터. 화면마다 render(root, params) 를 가진 모듈을 부른다.
-import * as home from "./views/home.js?v=20261106h";
+import * as home from "./views/home.js?v=20261106w";
 import * as after from "./views/after.js";
 import * as before from "./views/before.js";
 import * as sangjo from "./views/sangjo.js";
 import * as about from "./views/about.js";
-import * as note from "./views/note.js?v=20261106h";
-import * as help from "./views/help.js?v=20261106h";
+import * as note from "./views/note.js?v=20261106w";
+import * as help from "./views/help.js?v=20261106w";
 import * as privacy from "./views/privacy.js";
 import { syncNav } from "./nav.js";
 import { get } from "./store.js";

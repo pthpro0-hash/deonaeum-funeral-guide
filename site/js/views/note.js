@@ -11,7 +11,7 @@ import { pushReady } from "../config.js";
 import { disablePush, enablePush, isIos, pushSupported, standalone } from "../pushclient.js";
 import { get, set } from "../store.js";
 import { esc, footer, top } from "../ui.js";
-import * as plan from "./plan.js?v=20261106h"; // 옛 plan.js가 캐시에 남아 있어도 새 판을 받도록
+import * as plan from "./plan.js?v=20261106w"; // 옛 plan.js가 캐시에 남아 있어도 새 판을 받도록
 import * as portrait from "./portrait.js";
 
 const SUB = {
