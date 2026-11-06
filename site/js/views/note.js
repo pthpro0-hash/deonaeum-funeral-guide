@@ -11,7 +11,7 @@ import { pushReady } from "../config.js";
 import { disablePush, enablePush, isIos, pushSupported, standalone } from "../pushclient.js";
 import { get, set } from "../store.js";
 import { esc, footer, top } from "../ui.js";
-import * as plan from "./plan.js?v=20261106p"; // 옛 plan.js가 캐시에 남아 있어도 새 판을 받도록
+import * as plan from "./plan.js?v=20261106h"; // 옛 plan.js가 캐시에 남아 있어도 새 판을 받도록
 import * as portrait from "./portrait.js";
 
 const SUB = {
@@ -64,6 +64,16 @@ const CHAPTERS = [
     { href: "seal", label: "지킴이에게 노트 파일 보내기", done: () => !!get("note.seal", {}).made },
   ] },
 ];
+
+// 홈 화면에 보여 줄 진행 상태
+export function noteProgress() {
+  return {
+    started: keepersDecided(get("note.keepers", null)),
+    filled: CHAPTERS.filter((c) => c.items.some((i) => i.done?.())).length,
+    total: CHAPTERS.length,
+    updated: get("note.profile", {}).updated || "",
+  };
+}
 
 function renderCover(root) {
   const k = get("note.keepers", {});
@@ -759,7 +769,7 @@ function renderKit(root) {
       <p class="small">만든 날 ${esc(today())}${k.mode === "set" ? ` · 노트 지킴이 ${validKeepers(k.list).map((x) => esc(x.name) + (x.rel ? `(${esc(x.rel)})` : "")).join(", ")}` : ""}</p>
       ${kitSections(offNow)}
       <section class="kit-sec"><h3>가족에게 드리는 안내</h3>
-        <p class="small">장례를 치러야 할 때는 더나음 장례안내(${esc(location.host + location.pathname)})의 "임종 후"에서 할 일을 시간 순서대로 볼 수 있어요. 장례식장·화장장·상조회사도 공식 자료로 비교할 수 있습니다.</p>
+        <p class="small">장례를 치러야 할 때는 더나음 장례안내(${esc(location.host + location.pathname)})의 "장례 안내"에서 할 일을 시간 순서대로 볼 수 있어요. 장례식장·화장장·상조회사도 공식 자료로 비교할 수 있습니다.</p>
         <p class="small">이 노트는 바람과 마음을 전하려고 적은 것이며 법적 효력이 있는 유언이 아닙니다. 가족이 상황에 맞게 정할 수 있어요. 재산에 관한 뜻은 민법이 정한 방식의 유언으로 따로 남겨야 합니다(민법 제1065조).</p>
       </section>`;
   };

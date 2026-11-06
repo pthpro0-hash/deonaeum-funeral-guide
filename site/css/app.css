@@ -240,3 +240,11 @@ label.btn[aria-disabled="true"] { opacity: .55; cursor: default; }
   .seal-card { border: 1px solid #000; padding: 10mm; max-width: 150mm; }
   .seal-card .big-code { font-size: 22pt; border-color: #000; background: none; }
 }
+
+/* 홈: 인생 노트가 메인. 장례를 막 치러야 하는 가족을 위한 줄은 늘 맨 위에 */
+.urgent { display: block; margin: 14px 0 0; padding: 12px 14px; border: 1.5px solid var(--ink); border-radius: 8px; background: var(--field); font-size: 14.5px; color: var(--ink); text-decoration: none; line-height: 1.5; }
+.urgent b { white-space: nowrap; }
+.inside { display: grid; grid-template-columns: 1fr; margin: 6px 0 0; }
+.inside dt { font-family: var(--serif); font-size: 16px; font-weight: 500; padding-top: 12px; border-top: 1px solid var(--soft); }
+.inside dt:first-child { border-top: 0; }
+.inside dd { margin: 2px 0 0; padding-bottom: 12px; font-size: 13.5px; color: var(--sub); }
